@@ -1,5 +1,6 @@
 -- Rana Moeez Hassan
 -- ENGS31 Final Project
+-- VGA Screen Synchronizer
 
 library ieee;
 use ieee.std_logic_1164.all;

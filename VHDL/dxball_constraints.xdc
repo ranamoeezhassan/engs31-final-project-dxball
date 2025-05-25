@@ -13,9 +13,14 @@ set_property PACKAGE_PIN W5 [get_ports ext_clk]
 ##====================================================================
 ## Buttons
 ##====================================================================
-set_property PACKAGE_PIN T17 	 [get_ports reset]						
+set_property PACKAGE_PIN U17 	 [get_ports reset]						
 set_property IOSTANDARD LVCMOS33 [get_ports reset]
 
+## Buttons for paddle control
+# Right button (btnR)
+set_property -dict { PACKAGE_PIN T17 IOSTANDARD LVCMOS33 } [get_ports btn_right]
+#  -- Left button (btnL)
+set_property -dict { PACKAGE_PIN W19 IOSTANDARD LVCMOS33 } [get_ports btn_left]   
 
 ##====================================================================
 ## VGA Connector
