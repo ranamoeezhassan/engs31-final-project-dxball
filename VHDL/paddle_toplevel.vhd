@@ -9,7 +9,7 @@ use ieee.math_real.all;
 --=============================================================================
 --Entity Declaration:
 --=============================================================================
-entity dxball_toplevel is
+entity paddle_toplevel is
     port (
         ext_clk : in std_logic;
         btn_left : in std_logic;     -- Left button (e.g., btnL)
@@ -24,7 +24,7 @@ end entity;
 --=============================================================================
 --Architecture
 --=============================================================================
-architecture testbench of dxball_toplevel is
+architecture testbench of paddle_toplevel is
 
 --=============================================================================
 --Component Declaration
@@ -38,7 +38,7 @@ component system_clock_generation is
         system_clk_port		: out std_logic);
 end component;
 
-component vga_test_pattern is
+component paddle_test is
     port (
         row, column : in std_logic_vector(9 downto 0);
         paddle_x : in std_logic_vector(9 downto 0);
@@ -75,7 +75,7 @@ end component;
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --Paddle Controller:
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-component paddle_controller
+component paddle
     Port (
         clk : in STD_LOGIC;
         reset : in STD_LOGIC;
@@ -120,7 +120,7 @@ port map (
 	pixel_y => pixel_y);
 
 -- VGA Display Driver
-vga_pattern_maker: vga_test_pattern
+vga_pattern_maker: paddle_test
 port map (
 	row => pixel_y,
 	column => pixel_x,
@@ -151,7 +151,7 @@ right_button_debouncer: button_interface
     );
 
 -- Paddle controller
-paddle_ctrl: paddle_controller
+paddle_ctrl: paddle
     port map (
         clk => system_clk,
         reset => reset,

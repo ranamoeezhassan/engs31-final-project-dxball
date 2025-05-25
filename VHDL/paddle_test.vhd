@@ -12,15 +12,15 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity vga_test_pattern is
+entity paddle_test is
     port (
         row, column : in std_logic_vector(9 downto 0);
         paddle_x : in std_logic_vector(9 downto 0);
         color : out std_logic_vector(11 downto 0)
     );
-end vga_test_pattern;
+end paddle_test;
 
-architecture Behavioral of vga_test_pattern is
+architecture Behavioral of paddle_test is
     constant WHITE : std_logic_vector(11 downto 0) := "111111111111";
     constant BLACK : std_logic_vector(11 downto 0) := "000000000000";
     constant PADDLE_Y : integer := 450;  -- Paddle y-position
