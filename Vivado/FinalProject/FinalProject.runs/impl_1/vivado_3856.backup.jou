@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2021.2 (64-bit)
+# SW Build 3367213 on Tue Oct 19 02:48:09 MDT 2021
+# IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
+# Start of session at: Sat May 24 18:00:47 2025
+# Process ID: 3856
+# Current directory: O:/ENGS31/Final Project/Vivado/FinalProject/FinalProject.runs/impl_1
+# Command line: vivado.exe -log vga_toplevel.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source vga_toplevel.tcl -notrace
+# Log file: O:/ENGS31/Final Project/Vivado/FinalProject/FinalProject.runs/impl_1/vga_toplevel.vdi
+# Journal file: O:/ENGS31/Final Project/Vivado/FinalProject/FinalProject.runs/impl_1\vivado.jou
+# Running On: c011-01, OS: Windows, CPU Frequency: 2112 MHz, CPU Physical cores: 20, Host memory: 34031 MB
+#-----------------------------------------------------------
+source vga_toplevel.tcl -notrace
