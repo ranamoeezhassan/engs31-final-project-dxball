@@ -26,24 +26,22 @@ architecture Behavioral of display_controller is
     constant PADDLE_WIDTH : integer := 80;
     constant PADDLE_HEIGHT : integer := 10;
     constant BALL_RADIUS_SQ : integer := BALL_RADIUS * BALL_RADIUS;
+    
+    signal row_int, col_int, paddle_x_int, ball_x_int, ball_y_int, dist_sq: integer;
 begin
     process(clk)
-        variable row_int, col_int : integer;
-        variable paddle_x_int : integer;
-        variable ball_x_int, ball_y_int : integer;
-        variable dist_sq : integer;
     begin
         if rising_edge(clk) then
             if active = '1' then
                 -- Convert inputs to integers
-                row_int := to_integer(unsigned(row));
-                col_int := to_integer(unsigned(column));
-                paddle_x_int := to_integer(unsigned(paddle_x));
-                ball_x_int := to_integer(unsigned(ball_x));
-                ball_y_int := to_integer(unsigned(ball_y));
+                row_int <= to_integer(unsigned(row));
+                col_int <= to_integer(unsigned(column));
+                paddle_x_int <= to_integer(unsigned(paddle_x));
+                ball_x_int <= to_integer(unsigned(ball_x));
+                ball_y_int <= to_integer(unsigned(ball_y));
 
                 -- Default to background
-                color <= BLACK;
+                color <= BLACK; 
 
                 -- Draw paddle
                 if row_int >= PADDLE_Y and row_int < PADDLE_Y + PADDLE_HEIGHT and
@@ -52,8 +50,9 @@ begin
                 end if;
 
                 -- Draw ball (circular)
-                dist_sq := (row_int - ball_y_int) * (row_int - ball_y_int) + 
-                          (col_int - ball_x_int) * (col_int - ball_x_int);
+                dist_sq <= (row_int - ball_y_int) * (row_int - ball_y_int) + 
+                            (col_int - ball_x_int) * (col_int - ball_x_int);
+                            
                 if dist_sq <= BALL_RADIUS_SQ then
                     color <= RED;
                 end if;

@@ -41,67 +41,68 @@ architecture Behavioral of ball is
     
 begin
     process(clk, reset)
-    begin
-        if reset = '1' then
-            frame_counter <= (others => '0');
-            ball_x_reg <= ball_start_x;
-            ball_y_reg <= ball_start_y;
-            
-            dir_x <= '1';
-            dir_y <= '0';
-            
-            ball_active <= '0';
-            
-        elsif rising_edge(clk) then
-            frame_counter <= frame_counter + 1;
-            
-            if launch = '1' then
-                ball_active <= '1';
-            end if;
-            
-            if ball_active = '0' then
+    begin       
+        if rising_edge(clk) then
+            if reset = '1' then
+                frame_counter <= (others => '0');
                 ball_x_reg <= ball_start_x;
                 ball_y_reg <= ball_start_y;
+                
                 dir_x <= '1';
                 dir_y <= '0';
+                
+                ball_active <= '0';
             else
-                if frame_counter = FRAME_DIVIDER - 1 then
-                    frame_counter <= (others => '0');
-                    
-                    -- Move X
-                    if dir_x = '1' then
-                        if to_integer(ball_x_reg) + BALL_SPEED >= (MAX_X - BALL_RADIUS) then
-                            dir_x <= '0';
-                        else
-                            ball_x_reg <= ball_x_reg + BALL_SPEED;
-                        end if;
-                    else
-                        if to_integer(ball_x_reg) < (MIN_X + BALL_RADIUS + BALL_SPEED) then
-                            dir_x <= '1';
-                        else
-                            ball_x_reg <= ball_x_reg - BALL_SPEED;
-                        end if;
-                    end if;
-                    
-                    -- Move Y
-                    if dir_y = '1' then
-                        if to_integer(ball_y_reg) + BALL_SPEED >= (MAX_Y - BALL_RADIUS) then
-                            dir_y <= '0';
-                        else
-                            ball_y_reg <= ball_y_reg + BALL_SPEED;
-                        end if;
-                    else
-                        if to_integer(ball_y_reg) < (MIN_Y + BALL_RADIUS + BALL_SPEED) then
-                            dir_y <= '1';
-                        else
-                            ball_y_reg <= ball_y_reg - BALL_SPEED;
-                        end if;
-                    end if;
-                    
-                    -- Paddle collision (for Rana)
-                                        
+                frame_counter <= frame_counter + 1;
+                
+                if launch = '1' then
+                    ball_active <= '1';
                 end if;
-            end if;
+                
+                if ball_active = '0' then
+                    ball_x_reg <= ball_start_x;
+                    ball_y_reg <= ball_start_y;
+                    dir_x <= '1';
+                    dir_y <= '0';
+                else
+                    if frame_counter = FRAME_DIVIDER - 1 then
+                        frame_counter <= (others => '0');
+                        
+                        -- Move X
+                        if dir_x = '1' then
+                            if to_integer(ball_x_reg) + BALL_SPEED >= (MAX_X - BALL_RADIUS) then
+                                dir_x <= '0';
+                            else
+                                ball_x_reg <= ball_x_reg + BALL_SPEED;
+                            end if;
+                        else
+                            if to_integer(ball_x_reg) < (MIN_X + BALL_RADIUS + BALL_SPEED) then
+                                dir_x <= '1';
+                            else
+                                ball_x_reg <= ball_x_reg - BALL_SPEED;
+                            end if;
+                        end if;
+                        
+                        -- Move Y
+                        if dir_y = '1' then
+                            if to_integer(ball_y_reg) + BALL_SPEED >= (MAX_Y - BALL_RADIUS) then
+                                dir_y <= '0';
+                            else
+                                ball_y_reg <= ball_y_reg + BALL_SPEED;
+                            end if;
+                        else
+                            if to_integer(ball_y_reg) < (MIN_Y + BALL_RADIUS + BALL_SPEED) then
+                                dir_y <= '1';
+                            else
+                                ball_y_reg <= ball_y_reg - BALL_SPEED;
+                            end if;
+                        end if;
+                        
+                        -- Paddle collision (for Rana)
+                                            
+                    end if;
+                end if;
+              end if;
         end if;
     end process;
 

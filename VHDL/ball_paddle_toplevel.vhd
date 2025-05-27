@@ -136,7 +136,7 @@ signal system_clk 	: std_logic := '0';
 signal pixel_x, pixel_y, paddle_x, ball_pos_x, ball_pos_y : std_logic_vector(9 downto 0);
 
 signal video_on 	: std_logic := '0';
-signal btn_left_db, btn_right_db, btn_center_db : std_logic;
+signal btn_left_db, btn_right_db, btn_center_db, reset_db : std_logic;
 signal launch_ball : std_logic;
 
 -- Signal for Game Controller outputs
@@ -163,7 +163,7 @@ port map(
 vga_synchronizer: vga_sync
 port map (
 	game_clk => system_clk,
-	reset => reset,
+	reset => reset_db,
 	
 	hsync => hsync,
 	vsync => vsync,
@@ -203,6 +203,15 @@ center_button_debouncer: button_interface
         button_db_port => btn_center_db,
         button_mp_port => open
     ); 
+
+reset_button_debouncer: button_interface
+    generic map ( STABLE_TIME => 100 )
+    port map (
+        clk_port => system_clk,
+        button_port => reset,
+        button_db_port => reset_db,
+        button_mp_port => open
+    ); 
 -- VGA Display Driver
 disp_ctrl: display_controller
     port map (
@@ -220,16 +229,17 @@ disp_ctrl: display_controller
 paddle_ctrl: paddle
     port map (
         clk => system_clk,
-        reset => reset,
+        reset => reset_db,
         btn_left_db => btn_left_db,
         btn_right_db => btn_right_db,
         paddle_x => paddle_x
 );
 
+
 game_ctrl : game_controller
     port map (
         clk => system_clk,
-        reset => reset,
+        reset => reset_db,
         btn_center => btn_center_db,
         paddle_x => unsigned(paddle_x),
         paddle_width => PADDLE_WIDTH_C,
@@ -249,7 +259,7 @@ ball_ctrl : ball
     )
     port map (
         clk => system_clk,
-        reset => reset,
+        reset => reset_db,
         launch => launch_ball,
         ball_start_x => ball_start_x_sig,
         ball_start_y => ball_start_y_sig,
@@ -257,7 +267,6 @@ ball_ctrl : ball
         ball_pos_x => ball_pos_x,
         ball_pos_y => ball_pos_y
     );
-    
--- Game controller
+   
 
 end testbench;
