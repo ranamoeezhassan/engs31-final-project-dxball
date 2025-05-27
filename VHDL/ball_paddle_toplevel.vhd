@@ -9,7 +9,7 @@ use ieee.math_real.all;
 --=============================================================================
 --Entity Declaration:
 --=============================================================================
-entity paddle_toplevel is
+entity ball_paddle_toplevel is
     port (
         ext_clk : in std_logic;
         btn_left : in std_logic;     -- Left button (e.g., btnL)
@@ -24,7 +24,7 @@ end entity;
 --=============================================================================
 --Architecture
 --=============================================================================
-architecture testbench of paddle_toplevel is
+architecture testbench of ball_paddle_toplevel is
 
 --=============================================================================
 --Component Declaration
@@ -38,12 +38,19 @@ component system_clock_generation is
         system_clk_port		: out std_logic);
 end component;
 
-component paddle_test is
+component display_controller
+    generic (
+        BALL_RADIUS : integer := 15
+    );
     port (
-        clk : in std_logic;
-        row, column : in std_logic_vector(9 downto 0);
-        paddle_x : in std_logic_vector(9 downto 0);
-        color : out std_logic_vector(11 downto 0)
+        clk         : in  std_logic;
+        row         : in  std_logic_vector(9 downto 0);
+        column      : in  std_logic_vector(9 downto 0);
+        paddle_x    : in  std_logic_vector(9 downto 0);
+        ball_x      : in  std_logic_vector(9 downto 0);
+        ball_y      : in  std_logic_vector(9 downto 0);
+        active      : in  std_logic;
+        color       : out std_logic_vector(11 downto 0)
     );
 end component;
 
@@ -76,6 +83,25 @@ end component;
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --Paddle Controller:
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+component ball is
+    Generic( 
+        BALL_SPEED : integer := 5;
+        BALL_RADIUS : integer := 15
+    );
+    Port (
+        clk : in STD_LOGIC;          -- 25 MHz clock
+        reset : in STD_LOGIC;        -- Active-high reset
+        ball_dir_x : in STD_LOGIC;
+        ball_dir_y : in STD_LOGIC;
+
+        ball_pos_x : out STD_LOGIC_VECTOR(9 downto 0); 
+        ball_pos_y : out STD_LOGIC_VECTOR(9 downto 0)
+    );
+end component;
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--Paddle Controller:
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 component paddle
     Port (
         clk : in STD_LOGIC;
@@ -89,7 +115,7 @@ end component;
 --Signals
 --=============================================================================
 signal system_clk 	: std_logic := '0';
-signal pixel_x, pixel_y, paddle_x, ball_x, ball_y : std_logic_vector(9 downto 0);
+signal pixel_x, pixel_y, paddle_x, ball_pos_x, ball_pos_y : std_logic_vector(9 downto 0);
 
 signal video_on 	: std_logic := '0';
 signal btn_left_db, btn_right_db : std_logic;
@@ -120,15 +146,6 @@ port map (
 	pixel_x => pixel_x,
 	pixel_y => pixel_y);
 
--- VGA Display Driver
-vga_pattern_maker: paddle_test
-port map (
-    clk => system_clk,
-	row => pixel_y,
-	column => pixel_x,
-    paddle_x => paddle_x,
-	
-	color => rgb);
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --Wire the input conditioning block into the shell with a port map:
@@ -151,6 +168,19 @@ right_button_debouncer: button_interface
         button_db_port => btn_right_db,
         button_mp_port => open
     );
+    
+-- VGA Display Driver
+disp_ctrl: display_controller
+    port map (
+        clk      => system_clk,
+        row      => pixel_y,
+        column   => pixel_x,
+        paddle_x => paddle_x,
+        ball_x   => ball_pos_x,
+        ball_y   => ball_pos_y,
+        active   => video_on,
+        color    => rgb
+    );
 
 -- Paddle controller
 paddle_ctrl: paddle
@@ -161,4 +191,19 @@ paddle_ctrl: paddle
         btn_right_db => btn_right_db,
         paddle_x => paddle_x
 );
+
+ball_controller: ball
+    generic map (
+        BALL_RADIUS => 10,
+        BALL_SPEED => 5
+    )
+    port map (
+        clk => system_clk,          
+        reset => reset,      
+        ball_dir_x => btn_right_db,
+        ball_dir_y => btn_left_db,
+        ball_pos_x => ball_pos_x,
+        ball_pos_y => ball_pos_y
+    );
+
 end testbench;
