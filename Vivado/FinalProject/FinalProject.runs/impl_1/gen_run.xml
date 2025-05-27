@@ -1,82 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="impl_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1748125163">
-  <File Type="ROUTE-PWR" Name="vga_toplevel_power_routed.rpt"/>
-  <File Type="PA-TCL" Name="vga_toplevel.tcl"/>
-  <File Type="BITSTR-MMI" Name="vga_toplevel.mmi"/>
-  <File Type="OPT-METHODOLOGY-DRC" Name="vga_toplevel_methodology_drc_opted.rpt"/>
-  <File Type="INIT-TIMING" Name="vga_toplevel_timing_summary_init.rpt"/>
-  <File Type="ROUTE-PWR-SUM" Name="vga_toplevel_power_summary_routed.pb"/>
-  <File Type="REPORTS-TCL" Name="vga_toplevel_reports.tcl"/>
-  <File Type="OPT-TIMING" Name="vga_toplevel_timing_summary_opted.rpt"/>
-  <File Type="OPT-DCP" Name="vga_toplevel_opt.dcp"/>
-  <File Type="OPT-DRC" Name="vga_toplevel_drc_opted.rpt"/>
-  <File Type="OPT-HWDEF" Name="vga_toplevel.hwdef"/>
-  <File Type="PWROPT-DCP" Name="vga_toplevel_pwropt.dcp"/>
-  <File Type="PWROPT-DRC" Name="vga_toplevel_drc_pwropted.rpt"/>
-  <File Type="PWROPT-TIMING" Name="vga_toplevel_timing_summary_pwropted.rpt"/>
-  <File Type="PLACE-DCP" Name="vga_toplevel_placed.dcp"/>
-  <File Type="PLACE-IO" Name="vga_toplevel_io_placed.rpt"/>
-  <File Type="PLACE-CLK" Name="vga_toplevel_clock_utilization_placed.rpt"/>
-  <File Type="PLACE-UTIL" Name="vga_toplevel_utilization_placed.rpt"/>
-  <File Type="PLACE-UTIL-PB" Name="vga_toplevel_utilization_placed.pb"/>
-  <File Type="PLACE-CTRL" Name="vga_toplevel_control_sets_placed.rpt"/>
-  <File Type="PLACE-SIMILARITY" Name="vga_toplevel_incremental_reuse_placed.rpt"/>
-  <File Type="PLACE-PRE-SIMILARITY" Name="vga_toplevel_incremental_reuse_pre_placed.rpt"/>
-  <File Type="BG-BIN" Name="vga_toplevel.bin"/>
-  <File Type="PLACE-TIMING" Name="vga_toplevel_timing_summary_placed.rpt"/>
-  <File Type="POSTPLACE-PWROPT-DCP" Name="vga_toplevel_postplace_pwropt.dcp"/>
-  <File Type="BITSTR-MSK" Name="vga_toplevel.msk"/>
-  <File Type="POSTPLACE-PWROPT-TIMING" Name="vga_toplevel_timing_summary_postplace_pwropted.rpt"/>
-  <File Type="PHYSOPT-DCP" Name="vga_toplevel_physopt.dcp"/>
-  <File Type="PHYSOPT-DRC" Name="vga_toplevel_drc_physopted.rpt"/>
-  <File Type="BITSTR-RBT" Name="vga_toplevel.rbt"/>
-  <File Type="PHYSOPT-TIMING" Name="vga_toplevel_timing_summary_physopted.rpt"/>
-  <File Type="ROUTE-ERROR-DCP" Name="vga_toplevel_routed_error.dcp"/>
-  <File Type="ROUTE-DCP" Name="vga_toplevel_routed.dcp"/>
-  <File Type="ROUTE-BLACKBOX-DCP" Name="vga_toplevel_routed_bb.dcp"/>
-  <File Type="ROUTE-DRC" Name="vga_toplevel_drc_routed.rpt"/>
-  <File Type="ROUTE-DRC-PB" Name="vga_toplevel_drc_routed.pb"/>
-  <File Type="ROUTE-DRC-RPX" Name="vga_toplevel_drc_routed.rpx"/>
-  <File Type="ROUTE-METHODOLOGY-DRC" Name="vga_toplevel_methodology_drc_routed.rpt"/>
-  <File Type="ROUTE-METHODOLOGY-DRC-RPX" Name="vga_toplevel_methodology_drc_routed.rpx"/>
-  <File Type="ROUTE-METHODOLOGY-DRC-PB" Name="vga_toplevel_methodology_drc_routed.pb"/>
-  <File Type="ROUTE-PWR-RPX" Name="vga_toplevel_power_routed.rpx"/>
-  <File Type="ROUTE-STATUS" Name="vga_toplevel_route_status.rpt"/>
-  <File Type="ROUTE-STATUS-PB" Name="vga_toplevel_route_status.pb"/>
-  <File Type="ROUTE-TIMINGSUMMARY" Name="vga_toplevel_timing_summary_routed.rpt"/>
-  <File Type="ROUTE-TIMING-PB" Name="vga_toplevel_timing_summary_routed.pb"/>
-  <File Type="ROUTE-TIMING-RPX" Name="vga_toplevel_timing_summary_routed.rpx"/>
-  <File Type="ROUTE-SIMILARITY" Name="vga_toplevel_incremental_reuse_routed.rpt"/>
-  <File Type="ROUTE-CLK" Name="vga_toplevel_clock_utilization_routed.rpt"/>
-  <File Type="ROUTE-BUS-SKEW" Name="vga_toplevel_bus_skew_routed.rpt"/>
-  <File Type="ROUTE-BUS-SKEW-PB" Name="vga_toplevel_bus_skew_routed.pb"/>
-  <File Type="ROUTE-BUS-SKEW-RPX" Name="vga_toplevel_bus_skew_routed.rpx"/>
-  <File Type="POSTROUTE-PHYSOPT-DCP" Name="vga_toplevel_postroute_physopt.dcp"/>
-  <File Type="POSTROUTE-PHYSOPT-BLACKBOX-DCP" Name="vga_toplevel_postroute_physopt_bb.dcp"/>
-  <File Type="POSTROUTE-PHYSOPT-TIMING" Name="vga_toplevel_timing_summary_postroute_physopted.rpt"/>
-  <File Type="POSTROUTE-PHYSOPT-TIMING-PB" Name="vga_toplevel_timing_summary_postroute_physopted.pb"/>
-  <File Type="POSTROUTE-PHYSOPT-TIMING-RPX" Name="vga_toplevel_timing_summary_postroute_physopted.rpx"/>
-  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW" Name="vga_toplevel_bus_skew_postroute_physopted.rpt"/>
-  <File Type="BG-BIT" Name="vga_toplevel.bit"/>
-  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-PB" Name="vga_toplevel_bus_skew_postroute_physopted.pb"/>
-  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-RPX" Name="vga_toplevel_bus_skew_postroute_physopted.rpx"/>
-  <File Type="BITSTR-NKY" Name="vga_toplevel.nky"/>
-  <File Type="BITSTR-BMM" Name="vga_toplevel_bd.bmm"/>
-  <File Type="PDI-FILE" Name="vga_toplevel.pdi"/>
-  <File Type="RCFI_FILE" Name="vga_toplevel.rcfi"/>
-  <File Type="CFI_FILE" Name="vga_toplevel.cfi"/>
-  <File Type="RNPI_FILE" Name="vga_toplevel.rnpi"/>
-  <File Type="NPI_FILE" Name="vga_toplevel.npi"/>
-  <File Type="RBD_FILE" Name="vga_toplevel.rbd"/>
+<GenRun Id="impl_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1748304216">
+  <File Type="ROUTE-PWR" Name="ball_toplevel_power_routed.rpt"/>
+  <File Type="PA-TCL" Name="ball_toplevel.tcl"/>
+  <File Type="BITSTR-MMI" Name="ball_toplevel.mmi"/>
+  <File Type="OPT-METHODOLOGY-DRC" Name="ball_toplevel_methodology_drc_opted.rpt"/>
+  <File Type="INIT-TIMING" Name="ball_toplevel_timing_summary_init.rpt"/>
+  <File Type="ROUTE-PWR-SUM" Name="ball_toplevel_power_summary_routed.pb"/>
+  <File Type="REPORTS-TCL" Name="ball_toplevel_reports.tcl"/>
+  <File Type="OPT-TIMING" Name="ball_toplevel_timing_summary_opted.rpt"/>
+  <File Type="OPT-DCP" Name="ball_toplevel_opt.dcp"/>
+  <File Type="OPT-DRC" Name="ball_toplevel_drc_opted.rpt"/>
+  <File Type="OPT-HWDEF" Name="ball_toplevel.hwdef"/>
+  <File Type="PWROPT-DCP" Name="ball_toplevel_pwropt.dcp"/>
+  <File Type="PWROPT-DRC" Name="ball_toplevel_drc_pwropted.rpt"/>
+  <File Type="PWROPT-TIMING" Name="ball_toplevel_timing_summary_pwropted.rpt"/>
+  <File Type="PLACE-DCP" Name="ball_toplevel_placed.dcp"/>
+  <File Type="PLACE-IO" Name="ball_toplevel_io_placed.rpt"/>
+  <File Type="PLACE-CLK" Name="ball_toplevel_clock_utilization_placed.rpt"/>
+  <File Type="PLACE-UTIL" Name="ball_toplevel_utilization_placed.rpt"/>
+  <File Type="PLACE-UTIL-PB" Name="ball_toplevel_utilization_placed.pb"/>
+  <File Type="PLACE-CTRL" Name="ball_toplevel_control_sets_placed.rpt"/>
+  <File Type="PLACE-SIMILARITY" Name="ball_toplevel_incremental_reuse_placed.rpt"/>
+  <File Type="PLACE-PRE-SIMILARITY" Name="ball_toplevel_incremental_reuse_pre_placed.rpt"/>
+  <File Type="BG-BIN" Name="ball_toplevel.bin"/>
+  <File Type="PLACE-TIMING" Name="ball_toplevel_timing_summary_placed.rpt"/>
+  <File Type="POSTPLACE-PWROPT-DCP" Name="ball_toplevel_postplace_pwropt.dcp"/>
+  <File Type="BITSTR-MSK" Name="ball_toplevel.msk"/>
+  <File Type="POSTPLACE-PWROPT-TIMING" Name="ball_toplevel_timing_summary_postplace_pwropted.rpt"/>
+  <File Type="PHYSOPT-DCP" Name="ball_toplevel_physopt.dcp"/>
+  <File Type="PHYSOPT-DRC" Name="ball_toplevel_drc_physopted.rpt"/>
+  <File Type="BITSTR-RBT" Name="ball_toplevel.rbt"/>
+  <File Type="PHYSOPT-TIMING" Name="ball_toplevel_timing_summary_physopted.rpt"/>
+  <File Type="ROUTE-ERROR-DCP" Name="ball_toplevel_routed_error.dcp"/>
+  <File Type="ROUTE-DCP" Name="ball_toplevel_routed.dcp"/>
+  <File Type="ROUTE-BLACKBOX-DCP" Name="ball_toplevel_routed_bb.dcp"/>
+  <File Type="ROUTE-DRC" Name="ball_toplevel_drc_routed.rpt"/>
+  <File Type="ROUTE-DRC-PB" Name="ball_toplevel_drc_routed.pb"/>
+  <File Type="ROUTE-DRC-RPX" Name="ball_toplevel_drc_routed.rpx"/>
+  <File Type="ROUTE-METHODOLOGY-DRC" Name="ball_toplevel_methodology_drc_routed.rpt"/>
+  <File Type="ROUTE-METHODOLOGY-DRC-RPX" Name="ball_toplevel_methodology_drc_routed.rpx"/>
+  <File Type="ROUTE-METHODOLOGY-DRC-PB" Name="ball_toplevel_methodology_drc_routed.pb"/>
+  <File Type="ROUTE-PWR-RPX" Name="ball_toplevel_power_routed.rpx"/>
+  <File Type="ROUTE-STATUS" Name="ball_toplevel_route_status.rpt"/>
+  <File Type="ROUTE-STATUS-PB" Name="ball_toplevel_route_status.pb"/>
+  <File Type="ROUTE-TIMINGSUMMARY" Name="ball_toplevel_timing_summary_routed.rpt"/>
+  <File Type="ROUTE-TIMING-PB" Name="ball_toplevel_timing_summary_routed.pb"/>
+  <File Type="ROUTE-TIMING-RPX" Name="ball_toplevel_timing_summary_routed.rpx"/>
+  <File Type="ROUTE-SIMILARITY" Name="ball_toplevel_incremental_reuse_routed.rpt"/>
+  <File Type="ROUTE-CLK" Name="ball_toplevel_clock_utilization_routed.rpt"/>
+  <File Type="ROUTE-BUS-SKEW" Name="ball_toplevel_bus_skew_routed.rpt"/>
+  <File Type="ROUTE-BUS-SKEW-PB" Name="ball_toplevel_bus_skew_routed.pb"/>
+  <File Type="ROUTE-BUS-SKEW-RPX" Name="ball_toplevel_bus_skew_routed.rpx"/>
+  <File Type="POSTROUTE-PHYSOPT-DCP" Name="ball_toplevel_postroute_physopt.dcp"/>
+  <File Type="POSTROUTE-PHYSOPT-BLACKBOX-DCP" Name="ball_toplevel_postroute_physopt_bb.dcp"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING" Name="ball_toplevel_timing_summary_postroute_physopted.rpt"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-PB" Name="ball_toplevel_timing_summary_postroute_physopted.pb"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-RPX" Name="ball_toplevel_timing_summary_postroute_physopted.rpx"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW" Name="ball_toplevel_bus_skew_postroute_physopted.rpt"/>
+  <File Type="BG-BIT" Name="ball_toplevel.bit"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-PB" Name="ball_toplevel_bus_skew_postroute_physopted.pb"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-RPX" Name="ball_toplevel_bus_skew_postroute_physopted.rpx"/>
+  <File Type="BITSTR-NKY" Name="ball_toplevel.nky"/>
+  <File Type="BITSTR-BMM" Name="ball_toplevel_bd.bmm"/>
+  <File Type="PDI-FILE" Name="ball_toplevel.pdi"/>
+  <File Type="RCFI_FILE" Name="ball_toplevel.rcfi"/>
+  <File Type="CFI_FILE" Name="ball_toplevel.cfi"/>
+  <File Type="RNPI_FILE" Name="ball_toplevel.rnpi"/>
+  <File Type="NPI_FILE" Name="ball_toplevel.npi"/>
+  <File Type="RBD_FILE" Name="ball_toplevel.rbd"/>
   <File Type="BITSTR-LTX" Name="debug_nets.ltx"/>
-  <File Type="BITSTR-LTX" Name="vga_toplevel.ltx"/>
-  <File Type="BITSTR-SYSDEF" Name="vga_toplevel.sysdef"/>
-  <File Type="BG-BGN" Name="vga_toplevel.bgn"/>
-  <File Type="BG-DRC" Name="vga_toplevel.drc"/>
-  <File Type="RDI-RDI" Name="vga_toplevel.vdi"/>
+  <File Type="BITSTR-LTX" Name="ball_toplevel.ltx"/>
+  <File Type="BITSTR-SYSDEF" Name="ball_toplevel.sysdef"/>
+  <File Type="BG-BGN" Name="ball_toplevel.bgn"/>
+  <File Type="BG-DRC" Name="ball_toplevel.drc"/>
+  <File Type="RDI-RDI" Name="ball_toplevel.vdi"/>
   <File Type="WBT-USG" Name="usage_statistics_webtalk.html"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
+    <File Path="$PPRDIR/../../VHDL/ball.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/ball_test.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/button_interface.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
     <File Path="$PPRDIR/../../VHDL/clock_generation.vhd">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
@@ -89,33 +107,69 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
+    <File Path="$PPRDIR/../../VHDL/ball_toplevel.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/paddle.vhd">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/paddle_test.vhd">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/paddle_toplevel.vhd">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
     <File Path="$PPRDIR/../../VHDL/vga_test_pattern_12bit.vhd">
       <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
     <File Path="$PPRDIR/../../VHDL/vga_toplevel.vhd">
       <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
     <Config>
       <Option Name="DesignMode" Val="RTL"/>
-      <Option Name="TopModule" Val="vga_toplevel"/>
-      <Option Name="TopAutoSet" Val="TRUE"/>
+      <Option Name="TopModule" Val="ball_toplevel"/>
     </Config>
   </FileSet>
   <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
     <Filter Type="Constrs"/>
     <File Path="$PPRDIR/../../VHDL/vga_toplevel_constraints.xdc">
       <FileInfo>
+        <Attr Name="UserDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/paddle_constraints.xdc">
+      <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
       </FileInfo>
     </File>
     <Config>
+      <Option Name="TargetConstrsFile" Val="$PPRDIR/../../VHDL/paddle_constraints.xdc"/>
       <Option Name="ConstrsType" Val="XDC"/>
     </Config>
   </FileSet>

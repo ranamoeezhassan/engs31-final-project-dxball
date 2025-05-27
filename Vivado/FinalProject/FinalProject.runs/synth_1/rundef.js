@@ -23,7 +23,7 @@ eval( EAInclude(ISEJScriptLib) );
 
 
 ISEStep( "vivado",
-         "-log vga_toplevel.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source vga_toplevel.tcl" );
+         "-log ball_toplevel.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source ball_toplevel.tcl" );
 
 
 

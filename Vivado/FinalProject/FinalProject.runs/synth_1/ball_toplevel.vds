@@ -1,0 +1,328 @@
+#-----------------------------------------------------------
+# Vivado v2021.2 (64-bit)
+# SW Build 3367213 on Tue Oct 19 02:48:09 MDT 2021
+# IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
+# Start of session at: Mon May 26 20:03:38 2025
+# Process ID: 6428
+# Current directory: O:/ENGS31/Final_Project/Vivado/FinalProject/FinalProject.runs/synth_1
+# Command line: vivado.exe -log ball_toplevel.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source ball_toplevel.tcl
+# Log file: O:/ENGS31/Final_Project/Vivado/FinalProject/FinalProject.runs/synth_1/ball_toplevel.vds
+# Journal file: O:/ENGS31/Final_Project/Vivado/FinalProject/FinalProject.runs/synth_1\vivado.jou
+# Running On: c011-02, OS: Windows, CPU Frequency: 2112 MHz, CPU Physical cores: 20, Host memory: 34031 MB
+#-----------------------------------------------------------
+source ball_toplevel.tcl -notrace
+Command: read_checkpoint -auto_incremental -incremental O:/ENGS31/Final_Project/Vivado/FinalProject/FinalProject.srcs/utils_1/imports/synth_1/vga_toplevel.dcp
+INFO: [Vivado 12-5825] Read reference checkpoint from O:/ENGS31/Final_Project/Vivado/FinalProject/FinalProject.srcs/utils_1/imports/synth_1/vga_toplevel.dcp for incremental synthesis
+INFO: [Vivado 12-7989] Please ensure there are no constraint changes
+Command: synth_design -top ball_toplevel -part xc7a35tcpg236-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Device 21-403] Loading part xc7a35tcpg236-1
+WARNING: [Designutils 20-4072] Reference run did not run incremental synthesis because the design is too small; reverting to default synthesis
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 1544
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 1246.922 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'ball_toplevel' [O:/ENGS31/Final_Project/VHDL/ball_toplevel.vhd:27]
+	Parameter CLK_DIVIDER_RATIO bound to: 4 - type: integer 
+INFO: [Synth 8-3491] module 'system_clock_generation' declared at 'O:/ENGS31/Final_Project/VHDL/clock_generation.vhd:14' bound to instance 'clocking' of component 'system_clock_generation' [O:/ENGS31/Final_Project/VHDL/ball_toplevel.vhd:111]
+INFO: [Synth 8-638] synthesizing module 'system_clock_generation' [O:/ENGS31/Final_Project/VHDL/clock_generation.vhd:26]
+	Parameter CLK_DIVIDER_RATIO bound to: 4 - type: integer 
+INFO: [Synth 8-113] binding component instance 'Slow_clock_buffer' to cell 'BUFG' [O:/ENGS31/Final_Project/VHDL/clock_generation.vhd:61]
+INFO: [Synth 8-256] done synthesizing module 'system_clock_generation' (1#1) [O:/ENGS31/Final_Project/VHDL/clock_generation.vhd:26]
+INFO: [Synth 8-3491] module 'vga_sync' declared at 'O:/ENGS31/Final_Project/VHDL/vga_sync.vhd:9' bound to instance 'vga_synchronizer' of component 'vga_sync' [O:/ENGS31/Final_Project/VHDL/ball_toplevel.vhd:119]
+INFO: [Synth 8-638] synthesizing module 'vga_sync' [O:/ENGS31/Final_Project/VHDL/vga_sync.vhd:23]
+INFO: [Synth 8-256] done synthesizing module 'vga_sync' (2#1) [O:/ENGS31/Final_Project/VHDL/vga_sync.vhd:23]
+	Parameter STABLE_TIME bound to: 100 - type: integer 
+INFO: [Synth 8-3491] module 'button_interface' declared at 'O:/ENGS31/Final_Project/VHDL/button_interface.vhd:16' bound to instance 'left_button_debouncer' of component 'button_interface' [O:/ENGS31/Final_Project/VHDL/ball_toplevel.vhd:136]
+INFO: [Synth 8-638] synthesizing module 'button_interface' [O:/ENGS31/Final_Project/VHDL/button_interface.vhd:27]
+	Parameter STABLE_TIME bound to: 100 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'button_interface' (3#1) [O:/ENGS31/Final_Project/VHDL/button_interface.vhd:27]
+	Parameter STABLE_TIME bound to: 100 - type: integer 
+INFO: [Synth 8-3491] module 'button_interface' declared at 'O:/ENGS31/Final_Project/VHDL/button_interface.vhd:16' bound to instance 'right_button_debouncer' of component 'button_interface' [O:/ENGS31/Final_Project/VHDL/ball_toplevel.vhd:145]
+	Parameter BALL_RADIUS bound to: 10 - type: integer 
+INFO: [Synth 8-3491] module 'ball_test' declared at 'O:/ENGS31/Final_Project/VHDL/ball_test.vhd:15' bound to instance 'vga_pattern_maker' of component 'ball_test' [O:/ENGS31/Final_Project/VHDL/ball_toplevel.vhd:154]
+INFO: [Synth 8-638] synthesizing module 'ball_test' [O:/ENGS31/Final_Project/VHDL/ball_test.vhd:26]
+	Parameter BALL_RADIUS bound to: 10 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'ball_test' (4#1) [O:/ENGS31/Final_Project/VHDL/ball_test.vhd:26]
+	Parameter BALL_SPEED bound to: 5 - type: integer 
+	Parameter BALL_RADIUS bound to: 10 - type: integer 
+INFO: [Synth 8-3491] module 'ball' declared at 'O:/ENGS31/Final_Project/VHDL/ball.vhd:5' bound to instance 'ball_controller' of component 'ball' [O:/ENGS31/Final_Project/VHDL/ball_toplevel.vhd:165]
+INFO: [Synth 8-638] synthesizing module 'ball' [O:/ENGS31/Final_Project/VHDL/ball.vhd:21]
+	Parameter BALL_SPEED bound to: 5 - type: integer 
+	Parameter BALL_RADIUS bound to: 10 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'ball' (5#1) [O:/ENGS31/Final_Project/VHDL/ball.vhd:21]
+INFO: [Synth 8-256] done synthesizing module 'ball_toplevel' (6#1) [O:/ENGS31/Final_Project/VHDL/ball_toplevel.vhd:27]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 1246.922 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:02 ; elapsed = 00:00:04 . Memory (MB): peak = 1246.922 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:02 ; elapsed = 00:00:04 . Memory (MB): peak = 1246.922 ; gain = 0.000
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 1246.922 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [O:/ENGS31/Final_Project/VHDL/paddle_constraints.xdc]
+Finished Parsing XDC File [O:/ENGS31/Final_Project/VHDL/paddle_constraints.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [O:/ENGS31/Final_Project/VHDL/paddle_constraints.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/ball_toplevel_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/ball_toplevel_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1271.246 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 1271.246 ; gain = 0.000
+WARNING: [Designutils 20-4072] Reference run did not run incremental synthesis because the design is too small; reverting to default synthesis
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:04 ; elapsed = 00:00:08 . Memory (MB): peak = 1271.246 ; gain = 24.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a35tcpg236-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:04 ; elapsed = 00:00:08 . Memory (MB): peak = 1271.246 ; gain = 24.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:04 ; elapsed = 00:00:08 . Memory (MB): peak = 1271.246 ; gain = 24.324
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'current_state_reg' in module 'button_interface'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                     low |                               00 |                               00
+             low_to_high |                               01 |                               01
+                    high |                               10 |                               10
+             high_to_low |                               11 |                               11
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'current_state_reg' using encoding 'sequential' in module 'button_interface'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:09 . Memory (MB): peak = 1271.246 ; gain = 24.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   3 Input   32 Bit       Adders := 2     
+	   2 Input   32 Bit       Adders := 1     
+	   2 Input   19 Bit       Adders := 1     
+	   2 Input   10 Bit       Adders := 4     
+	   2 Input    8 Bit       Adders := 2     
++---Registers : 
+	               32 Bit    Registers := 3     
+	               19 Bit    Registers := 1     
+	               10 Bit    Registers := 6     
+	                8 Bit    Registers := 2     
+	                2 Bit    Registers := 2     
+	                1 Bit    Registers := 5     
++---Multipliers : 
+	              32x32  Multipliers := 2     
++---Muxes : 
+	   2 Input   19 Bit        Muxes := 1     
+	   2 Input    4 Bit        Muxes := 2     
+	   4 Input    2 Bit        Muxes := 2     
+	   2 Input    2 Bit        Muxes := 4     
+	   2 Input    1 Bit        Muxes := 8     
+	   4 Input    1 Bit        Muxes := 4     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 90 (col length:60)
+BRAMs: 100 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+DSP Report: Generating DSP vga_pattern_maker/dist_sq1, operation Mode is: A*B.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: Generating DSP vga_pattern_maker/dist_sq1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: Generating DSP vga_pattern_maker/dist_sq1, operation Mode is: A*B.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: Generating DSP vga_pattern_maker/dist_sq1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: Generating DSP vga_pattern_maker/dist_sq1, operation Mode is: A*B.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: Generating DSP vga_pattern_maker/dist_sq1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: Generating DSP vga_pattern_maker/dist_sq1, operation Mode is: A*B.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: Generating DSP vga_pattern_maker/dist_sq1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+DSP Report: operator vga_pattern_maker/dist_sq1 is absorbed into DSP vga_pattern_maker/dist_sq1.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:05 ; elapsed = 00:00:11 . Memory (MB): peak = 1271.246 ; gain = 24.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++--------------+----------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name   | DSP Mapping    | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++--------------+----------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|ball_toplevel | A*B            | 18     | 15     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ball_toplevel | (PCIN>>17)+A*B | 15     | 15     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ball_toplevel | A*B            | 18     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ball_toplevel | (PCIN>>17)+A*B | 18     | 15     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ball_toplevel | A*B            | 18     | 15     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ball_toplevel | (PCIN>>17)+A*B | 15     | 15     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ball_toplevel | A*B            | 18     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|ball_toplevel | (PCIN>>17)+A*B | 18     | 15     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++--------------+----------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:07 ; elapsed = 00:00:15 . Memory (MB): peak = 1271.246 ; gain = 24.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:07 ; elapsed = 00:00:15 . Memory (MB): peak = 1271.246 ; gain = 24.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:07 ; elapsed = 00:00:15 . Memory (MB): peak = 1273.527 ; gain = 26.605
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:08 ; elapsed = 00:00:17 . Memory (MB): peak = 1281.957 ; gain = 35.035
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:08 ; elapsed = 00:00:17 . Memory (MB): peak = 1281.957 ; gain = 35.035
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:08 ; elapsed = 00:00:17 . Memory (MB): peak = 1281.957 ; gain = 35.035
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:08 ; elapsed = 00:00:17 . Memory (MB): peak = 1281.957 ; gain = 35.035
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:08 ; elapsed = 00:00:18 . Memory (MB): peak = 1281.957 ; gain = 35.035
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:08 ; elapsed = 00:00:18 . Memory (MB): peak = 1281.957 ; gain = 35.035
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+--------+------+
+|      |Cell    |Count |
++------+--------+------+
+|1     |BUFG    |     2|
+|2     |CARRY4  |    37|
+|3     |DSP48E1 |     6|
+|4     |LUT1    |    10|
+|5     |LUT2    |   128|
+|6     |LUT3    |     8|
+|7     |LUT4    |    18|
+|8     |LUT5    |    34|
+|9     |LUT6    |    24|
+|10    |FDCE    |    33|
+|11    |FDPE    |     6|
+|12    |FDRE    |   119|
+|13    |IBUF    |     4|
+|14    |OBUF    |    14|
++------+--------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:08 ; elapsed = 00:00:18 . Memory (MB): peak = 1281.957 ; gain = 35.035
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 1 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:05 ; elapsed = 00:00:16 . Memory (MB): peak = 1281.957 ; gain = 10.711
+Synthesis Optimization Complete : Time (s): cpu = 00:00:08 ; elapsed = 00:00:18 . Memory (MB): peak = 1281.957 ; gain = 35.035
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.004 . Memory (MB): peak = 1281.957 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 43 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1302.684 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete, checksum: 2d98d3ea
+INFO: [Common 17-83] Releasing license: Synthesis
+40 Infos, 3 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:09 ; elapsed = 00:00:21 . Memory (MB): peak = 1302.684 ; gain = 55.762
+INFO: [Common 17-1381] The checkpoint 'O:/ENGS31/Final_Project/Vivado/FinalProject/FinalProject.runs/synth_1/ball_toplevel.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file ball_toplevel_utilization_synth.rpt -pb ball_toplevel_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Mon May 26 20:04:07 2025...

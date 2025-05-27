@@ -1,0 +1,8 @@
+INFO: [VRFC 10-163] Analyzing VHDL file "O:/ENGS31/Final_Project/VHDL/clock_generation.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'system_clock_generation'
+INFO: [VRFC 10-163] Analyzing VHDL file "O:/ENGS31/Final_Project/VHDL/vga_sync.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'vga_sync'
+INFO: [VRFC 10-163] Analyzing VHDL file "O:/ENGS31/Final_Project/VHDL/vga_test_pattern_12bit.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'vga_test_pattern'
+INFO: [VRFC 10-163] Analyzing VHDL file "O:/ENGS31/Final_Project/VHDL/vga_toplevel.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'vga_toplevel'

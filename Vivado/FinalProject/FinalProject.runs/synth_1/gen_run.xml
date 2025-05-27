@@ -1,16 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1748125110" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/vga_toplevel.dcp">
-  <File Type="PA-TCL" Name="vga_toplevel.tcl"/>
-  <File Type="RDS-PROPCONSTRS" Name="vga_toplevel_drc_synth.rpt"/>
-  <File Type="REPORTS-TCL" Name="vga_toplevel_reports.tcl"/>
-  <File Type="RDS-RDS" Name="vga_toplevel.vds"/>
-  <File Type="RDS-UTIL" Name="vga_toplevel_utilization_synth.rpt"/>
-  <File Type="RDS-UTIL-PB" Name="vga_toplevel_utilization_synth.pb"/>
-  <File Type="RDS-DCP" Name="vga_toplevel.dcp"/>
-  <File Type="VDS-TIMINGSUMMARY" Name="vga_toplevel_timing_summary_synth.rpt"/>
-  <File Type="VDS-TIMING-PB" Name="vga_toplevel_timing_summary_synth.pb"/>
+<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1748304216" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/vga_toplevel.dcp">
+  <File Type="PA-TCL" Name="ball_toplevel.tcl"/>
+  <File Type="RDS-PROPCONSTRS" Name="ball_toplevel_drc_synth.rpt"/>
+  <File Type="REPORTS-TCL" Name="ball_toplevel_reports.tcl"/>
+  <File Type="RDS-RDS" Name="ball_toplevel.vds"/>
+  <File Type="RDS-UTIL" Name="ball_toplevel_utilization_synth.rpt"/>
+  <File Type="RDS-UTIL-PB" Name="ball_toplevel_utilization_synth.pb"/>
+  <File Type="RDS-DCP" Name="ball_toplevel.dcp"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="ball_toplevel_timing_summary_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="ball_toplevel_timing_summary_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
+    <File Path="$PPRDIR/../../VHDL/ball.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/ball_test.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/button_interface.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
     <File Path="$PPRDIR/../../VHDL/clock_generation.vhd">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
@@ -23,33 +41,69 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
+    <File Path="$PPRDIR/../../VHDL/ball_toplevel.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/paddle.vhd">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/paddle_test.vhd">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/paddle_toplevel.vhd">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
     <File Path="$PPRDIR/../../VHDL/vga_test_pattern_12bit.vhd">
       <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
     <File Path="$PPRDIR/../../VHDL/vga_toplevel.vhd">
       <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
     <Config>
       <Option Name="DesignMode" Val="RTL"/>
-      <Option Name="TopModule" Val="vga_toplevel"/>
-      <Option Name="TopAutoSet" Val="TRUE"/>
+      <Option Name="TopModule" Val="ball_toplevel"/>
     </Config>
   </FileSet>
   <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
     <Filter Type="Constrs"/>
     <File Path="$PPRDIR/../../VHDL/vga_toplevel_constraints.xdc">
       <FileInfo>
+        <Attr Name="UserDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../VHDL/paddle_constraints.xdc">
+      <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
       </FileInfo>
     </File>
     <Config>
+      <Option Name="TargetConstrsFile" Val="$PPRDIR/../../VHDL/paddle_constraints.xdc"/>
       <Option Name="ConstrsType" Val="XDC"/>
     </Config>
   </FileSet>

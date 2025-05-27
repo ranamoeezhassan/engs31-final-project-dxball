@@ -1,0 +1,9 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../../../VHDL/clock_generation.vhd" \
+"../../../../../../VHDL/vga_sync.vhd" \
+"../../../../../../VHDL/vga_test_pattern_12bit.vhd" \
+"../../../../../../VHDL/vga_toplevel.vhd" \
+
+# Do not sort compile order
+nosort

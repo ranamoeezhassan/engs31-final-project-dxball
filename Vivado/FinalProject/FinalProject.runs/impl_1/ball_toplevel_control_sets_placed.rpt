@@ -1,0 +1,86 @@
+Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2021.2 (win64) Build 3367213 Tue Oct 19 02:48:09 MDT 2021
+| Date         : Mon May 26 20:04:34 2025
+| Host         : c011-02 running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file ball_toplevel_control_sets_placed.rpt
+| Design       : ball_toplevel
+| Device       : xc7a35t
+------------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Total control sets                                       |     8 |
+|    Minimum number of control sets                        |     8 |
+|    Addition due to synthesis replication                 |     0 |
+|    Addition due to physical synthesis replication        |     0 |
+| Unused register locations in slices containing registers |    31 |
++----------------------------------------------------------+-------+
+* Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
+** Run report_qor_suggestions for automated merging and remapping suggestions
+
+
+2. Histogram
+------------
+
++--------------------+-------+
+|       Fanout       | Count |
++--------------------+-------+
+| Total control sets |     8 |
+| >= 0 to < 4        |     1 |
+| >= 4 to < 6        |     0 |
+| >= 6 to < 8        |     0 |
+| >= 8 to < 10       |     2 |
+| >= 10 to < 12      |     3 |
+| >= 12 to < 14      |     0 |
+| >= 14 to < 16      |     0 |
+| >= 16              |     2 |
++--------------------+-------+
+* Control sets can be remapped at either synth_design or opt_design
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |              94 |           31 |
+| No           | No                    | Yes                    |              19 |            7 |
+| No           | Yes                   | No                     |              26 |            8 |
+| Yes          | No                    | No                     |               0 |            0 |
+| Yes          | No                    | Yes                    |              20 |            8 |
+| Yes          | Yes                   | No                     |              10 |            3 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++--------------------+----------------------------+--------------------------------------+------------------+----------------+--------------+
+|    Clock Signal    |        Enable Signal       |           Set/Reset Signal           | Slice Load Count | Bel Load Count | Bels / Slice |
++--------------------+----------------------------+--------------------------------------+------------------+----------------+--------------+
+|  ext_clk_IBUF_BUFG |                            |                                      |                1 |              2 |         2.00 |
+|  clocking/CLK      |                            | left_button_debouncer/next_state[0]  |                2 |              8 |         4.00 |
+|  clocking/CLK      |                            | right_button_debouncer/next_state[0] |                3 |              8 |         2.67 |
+|  clocking/CLK      | ball_controller/ball_y_reg | reset_IBUF                           |                4 |             10 |         2.50 |
+|  clocking/CLK      | ball_controller/ball_x_reg | reset_IBUF                           |                4 |             10 |         2.50 |
+|  clocking/CLK      | vga_synchronizer/v_count   | reset_IBUF                           |                3 |             10 |         3.33 |
+|  clocking/CLK      |                            | reset_IBUF                           |               10 |             29 |         2.90 |
+|  clocking/CLK      |                            |                                      |               30 |             92 |         3.07 |
++--------------------+----------------------------+--------------------------------------+------------------+----------------+--------------+
+
+
