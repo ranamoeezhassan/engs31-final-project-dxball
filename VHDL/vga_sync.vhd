@@ -31,7 +31,7 @@ architecture rtl of vga_sync is
     constant START_H_RETRACE : integer := H_DISPLAY + H_R_BORDER;
     constant END_H_RETRACE   : integer := START_H_RETRACE + H_RETRACE - 1;
 
-    constant V_DISPLAY       : integer := 380;
+    constant V_DISPLAY       : integer := 480;
     constant V_T_BORDER      : integer := 10;
     constant V_B_BORDER      : integer := 33;
     constant V_RETRACE       : integer := 2;
