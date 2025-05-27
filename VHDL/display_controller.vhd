@@ -21,6 +21,7 @@ end display_controller;
 architecture Behavioral of display_controller is
     constant WHITE : std_logic_vector(11 downto 0) := "111111111111";
     constant BLACK : std_logic_vector(11 downto 0) := "000000000000";
+    constant RED   : std_logic_vector(11 downto 0) := "111100000000";
     constant PADDLE_Y : integer := 360;  -- Paddle y-position
     constant PADDLE_WIDTH : integer := 80;
     constant PADDLE_HEIGHT : integer := 10;
@@ -54,7 +55,7 @@ begin
                 dist_sq := (row_int - ball_y_int) * (row_int - ball_y_int) + 
                           (col_int - ball_x_int) * (col_int - ball_x_int);
                 if dist_sq <= BALL_RADIUS_SQ then
-                    color <= WHITE;
+                    color <= RED;
                 end if;
             else
                 color <= BLACK;  -- Blank during non-active periods

@@ -19,8 +19,10 @@ set_property IOSTANDARD LVCMOS33 [get_ports reset]
 ## Buttons for paddle control
 # Right button (btnR)
 set_property -dict { PACKAGE_PIN T17 IOSTANDARD LVCMOS33 } [get_ports btn_right]
-#  -- Left button (btnL)
-set_property -dict { PACKAGE_PIN W19 IOSTANDARD LVCMOS33 } [get_ports btn_left]   
+# Left button (btnL)
+set_property -dict { PACKAGE_PIN W19 IOSTANDARD LVCMOS33 } [get_ports btn_left]
+# Center button (btnC)
+set_property -dict { PACKAGE_PIN U18 IOSTANDARD LVCMOS33 } [get_ports btn_center]
 
 ##====================================================================
 ## VGA Connector

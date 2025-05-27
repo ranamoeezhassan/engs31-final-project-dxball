@@ -14,7 +14,8 @@ entity ball_paddle_toplevel is
         ext_clk : in std_logic;
         btn_left : in std_logic;     -- Left button (e.g., btnL)
         btn_right : in std_logic;    -- Right button (e.g., btnR)
-        reset : in std_logic;        -- Down burron
+        reset : in std_logic;        -- Down button
+        btn_center : in std_logic;  -- Center button to launch ball
         hsync : out std_logic;
         vsync : out std_logic;
         rgb : out std_logic_vector(11 downto 0)
@@ -40,7 +41,7 @@ end component;
 
 component display_controller
     generic (
-        BALL_RADIUS : integer := 15
+        BALL_RADIUS : integer := 10
     );
     port (
         clk         : in  std_logic;
@@ -81,21 +82,24 @@ component button_interface is
 end component;
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---Paddle Controller:
+--Ball Controller:
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 component ball is
-    Generic( 
-        BALL_SPEED : integer := 5;
-        BALL_RADIUS : integer := 15
+    generic (
+        BALL_RADIUS : integer;
+        BALL_SPEED : integer;
+        PADDLE_Y : integer;
+        PADDLE_WIDTH : integer
     );
-    Port (
-        clk : in STD_LOGIC;          -- 25 MHz clock
-        reset : in STD_LOGIC;        -- Active-high reset
-        ball_dir_x : in STD_LOGIC;
-        ball_dir_y : in STD_LOGIC;
-
-        ball_pos_x : out STD_LOGIC_VECTOR(9 downto 0); 
-        ball_pos_y : out STD_LOGIC_VECTOR(9 downto 0)
+    port (
+        clk : in std_logic;
+        reset : in std_logic;
+        launch : in std_logic;
+        ball_start_x : in unsigned(9 downto 0);
+        ball_start_y : in unsigned(9 downto 0);
+        paddle_x : in unsigned(9 downto 0);
+        ball_pos_x : out std_logic_vector(9 downto 0);
+        ball_pos_y : out std_logic_vector(9 downto 0)
     );
 end component;
 
@@ -111,6 +115,20 @@ component paddle
         paddle_x : out STD_LOGIC_VECTOR(9 downto 0)
     );
 end component;
+
+component game_controller
+    port (
+        clk         : in std_logic;
+        reset       : in std_logic;
+        btn_center  : in std_logic;
+        paddle_x    : in unsigned(9 downto 0);
+        paddle_width: in integer;
+        ball_radius : in integer;
+        ball_start_x: out unsigned(9 downto 0);
+        ball_start_y: out unsigned(9 downto 0);
+        launch_ball : out std_logic
+    );
+end component;
 --=============================================================================
 --Signals
 --=============================================================================
@@ -118,8 +136,16 @@ signal system_clk 	: std_logic := '0';
 signal pixel_x, pixel_y, paddle_x, ball_pos_x, ball_pos_y : std_logic_vector(9 downto 0);
 
 signal video_on 	: std_logic := '0';
-signal btn_left_db, btn_right_db : std_logic;
+signal btn_left_db, btn_right_db, btn_center_db : std_logic;
+signal launch_ball : std_logic;
 
+-- Signal for Game Controller outputs
+signal ball_start_x_sig : unsigned(9 downto 0);
+signal ball_start_y_sig : unsigned(9 downto 0);
+
+constant PADDLE_WIDTH_C : integer := 80;
+constant PADDLE_Y_C     : integer := 360;
+constant BALL_RADIUS_C  : integer := 10;
 --=============================================================================
 --Port Map
 --=============================================================================
@@ -168,7 +194,15 @@ right_button_debouncer: button_interface
         button_db_port => btn_right_db,
         button_mp_port => open
     );
-    
+
+center_button_debouncer: button_interface
+    generic map ( STABLE_TIME => 100 )
+    port map (
+        clk_port => system_clk,
+        button_port => btn_center,
+        button_db_port => btn_center_db,
+        button_mp_port => open
+    ); 
 -- VGA Display Driver
 disp_ctrl: display_controller
     port map (
@@ -192,18 +226,38 @@ paddle_ctrl: paddle
         paddle_x => paddle_x
 );
 
-ball_controller: ball
+game_ctrl : game_controller
+    port map (
+        clk => system_clk,
+        reset => reset,
+        btn_center => btn_center_db,
+        paddle_x => unsigned(paddle_x),
+        paddle_width => PADDLE_WIDTH_C,
+        ball_radius => BALL_RADIUS_C,
+        ball_start_x => ball_start_x_sig,
+        ball_start_y => ball_start_y_sig,
+        launch_ball => launch_ball
+    );
+
+-- Ball controller (no paddle collision here)
+ball_ctrl : ball
     generic map (
-        BALL_RADIUS => 10,
-        BALL_SPEED => 5
+        BALL_SPEED => 5,
+        BALL_RADIUS => BALL_RADIUS_C,
+        PADDLE_WIDTH => PADDLE_WIDTH_C,
+        PADDLE_Y => PADDLE_Y_C
     )
     port map (
-        clk => system_clk,          
-        reset => reset,      
-        ball_dir_x => btn_right_db,
-        ball_dir_y => btn_left_db,
+        clk => system_clk,
+        reset => reset,
+        launch => launch_ball,
+        ball_start_x => ball_start_x_sig,
+        ball_start_y => ball_start_y_sig,
+        paddle_x => unsigned(paddle_x),
         ball_pos_x => ball_pos_x,
         ball_pos_y => ball_pos_y
     );
+    
+-- Game controller
 
 end testbench;
