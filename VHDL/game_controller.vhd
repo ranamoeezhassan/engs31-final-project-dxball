@@ -17,33 +17,40 @@ entity game_controller is
 end game_controller;
 
 architecture Behavioral of game_controller is
-    type state_type is (BALL_ON_PADDLE, BALL_IN_MOTION, LOSE, WIN);
-    signal state : state_type := BALL_ON_PADDLE;
+    type state_type is (Idle, Playing, LOSE, WIN);
+    signal current_state, next_state : state_type := Idle;
 begin
-    process(clk, reset)
+    process(clk)
     begin
-        if reset = '1' then
-            state <= BALL_ON_PADDLE;
-        elsif rising_edge(clk) then
-            case state is
-                when BALL_ON_PADDLE =>
-                    if btn_center = '1' then
-                        state <= BALL_IN_MOTION;
-                    end if;
-                when BALL_IN_MOTION =>
-                    -- Could add restart logic if ball lost etc.
-                    null;
-                when WIN =>
-                    null;
-                when LOSE =>
-                    null;
-            end case;
+        if rising_edge(clk) then
+            current_state <= next_state;
         end if;
+    end process;
+    
+    process(current_state, btn_center, reset)
+    begin
+        next_state <= current_state;
+        
+        case current_state is
+            when Idle =>
+                if btn_center = '1' then
+                    next_state <= Playing;
+                end if;
+            when Playing =>
+                if reset = '1' then
+                    next_state <= Idle;
+                end if;
+                
+            when WIN =>
+                null;
+            when LOSE =>
+                null;
+        end case;
     end process;
 
     ball_start_x <= paddle_x + to_unsigned(paddle_width/2, 10);
     ball_start_y <= to_unsigned(360 - ball_radius - 1, 10); -- fixed paddle y position - ball radius offset
 
-    launch_ball <= '1' when state = BALL_IN_MOTION else '0';
+    launch_ball <= '1' when current_state = Playing else '0';
 
 end Behavioral;
