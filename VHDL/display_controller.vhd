@@ -22,7 +22,7 @@ architecture Behavioral of display_controller is
     constant WHITE : std_logic_vector(11 downto 0) := "111111111111";
     constant BLACK : std_logic_vector(11 downto 0) := "000000000000";
     constant RED   : std_logic_vector(11 downto 0) := "111100000000";
-    constant PADDLE_Y : integer := 360;  -- Paddle y-position
+    constant PADDLE_Y : integer := 370;  -- Paddle y-position
     constant PADDLE_WIDTH : integer := 80;
     constant PADDLE_HEIGHT : integer := 10;
     constant BALL_RADIUS_SQ : integer := BALL_RADIUS * BALL_RADIUS;
