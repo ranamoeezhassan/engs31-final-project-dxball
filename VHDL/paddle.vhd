@@ -4,11 +4,12 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity paddle is
     Port (
-        clk : in STD_LOGIC;          -- 25 MHz clock
-        reset : in STD_LOGIC;        -- Active-high reset
-        btn_left_db : in STD_LOGIC;  -- Debounced left button
-        btn_right_db : in STD_LOGIC; -- Debounced right button
-        paddle_x : out STD_LOGIC_VECTOR(9 downto 0)  -- Paddle's left x-coordinate
+        clk          : in STD_LOGIC;          -- 25 MHz clock
+        reset        : in STD_LOGIC;          -- Active-high reset
+        btn_left_db  : in STD_LOGIC;          -- Debounced left button
+        btn_right_db : in STD_LOGIC;          -- Debounced right button
+        game_over    : in STD_LOGIC;          -- Input from game_controller
+        paddle_x     : out STD_LOGIC_VECTOR(9 downto 0)  -- Paddle's left x-coordinate
     );
 end paddle;
 
@@ -25,14 +26,16 @@ begin
             paddle_x_reg <= to_unsigned(280, 10);  -- Center paddle
             frame_counter <= (others => '0');
         elsif rising_edge(clk) then
-            frame_counter <= frame_counter + 1;
-            if frame_counter = FRAME_DIVIDER - 1 then
-                frame_counter <= (others => '0');
-                -- Move paddle if button is held and within bounds
-                if btn_left_db = '1' and btn_right_db = '0' and paddle_x_reg > 0 then
-                    paddle_x_reg <= paddle_x_reg - 5;  -- Move left by 5 pixels
-                elsif btn_right_db = '1' and btn_left_db = '0' and paddle_x_reg < MAX_X then
-                    paddle_x_reg <= paddle_x_reg + 5;  -- Move right by 5 pixels
+            if game_over = '0' then  -- Only update if game is not over
+                frame_counter <= frame_counter + 1;
+                if frame_counter = FRAME_DIVIDER - 1 then
+                    frame_counter <= (others => '0');
+                    -- Move paddle if button is held and within bounds
+                    if btn_left_db = '1' and btn_right_db = '0' and paddle_x_reg > 0 then
+                        paddle_x_reg <= paddle_x_reg - 5;  -- Move left by 5 pixels
+                    elsif btn_right_db = '1' and btn_left_db = '0' and paddle_x_reg < MAX_X then
+                        paddle_x_reg <= paddle_x_reg + 5;  -- Move right by 5 pixels
+                    end if;
                 end if;
             end if;
         end if;

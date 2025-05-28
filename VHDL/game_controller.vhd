@@ -13,9 +13,10 @@ entity game_controller is
         paddle_width: in integer;
         paddle_height: in integer;
         ball_radius : in integer;
-        ball_dir_x : out std_logic;
-        ball_dir_y: out std_logic;
-        ball_moving: out std_logic
+        ball_dir_x  : out std_logic;
+        ball_dir_y  : out std_logic;
+        ball_moving : out std_logic;
+        game_over   : out std_logic -- New output to signal LOSE state
     );
 end game_controller;
 
@@ -48,25 +49,25 @@ begin
             ball_x_int   <= to_integer(ball_pos_x);
             ball_y_int   <= to_integer(ball_pos_y);
             paddle_x_int <= to_integer(paddle_pos_x);
-            paddle_left <= paddle_x_int;
+            paddle_left  <= paddle_x_int;
             paddle_right <= paddle_x_int + paddle_width;
             
             if reset = '1' then
-                ball_dir_x_reg <= '0'; -- initial direction left
-                ball_dir_y_reg <= '0'; -- initial direction up
+                ball_dir_x_reg  <= '0'; -- initial direction left
+                ball_dir_y_reg  <= '0'; -- initial direction up
                 ball_moving_reg <= '0';
             else
                 -- Update registered directions and moving with next computed values
-                ball_dir_x_reg <= ball_dir_x_next;
-                ball_dir_y_reg <= ball_dir_y_next;
+                ball_dir_x_reg  <= ball_dir_x_next;
+                ball_dir_y_reg  <= ball_dir_y_next;
                 ball_moving_reg <= ball_moving_next;
             end if;
         end if;
     end process;
     
     -- Output ports
-    ball_dir_x <= ball_dir_x_reg;
-    ball_dir_y <= ball_dir_y_reg;
+    ball_dir_x  <= ball_dir_x_reg;
+    ball_dir_y  <= ball_dir_y_reg;
     ball_moving <= ball_moving_reg;
     
     ------- FSM --------
@@ -78,7 +79,7 @@ begin
         end if;
     end process;
 
-    -- Next state logic (unchanged)
+    -- Next state logic
     process(current_state, btn_center, reset, ball_y_int)
     begin
         next_state <= current_state;
@@ -90,13 +91,17 @@ begin
             when Playing =>
                 if reset = '1' then
                     next_state <= Idle;
-                elsif ball_y_int > MAX_Y then
+                elsif ball_y_int + ball_radius >= MAX_Y then -- Detect bottom boundary hit
                     next_state <= LOSE;
                 end if;
             when WIN =>
-                null;
+                if reset = '1' then
+                    next_state <= Idle;
+                end if;
             when LOSE =>
-                null;
+                if reset = '1' then
+                    next_state <= Idle;
+                end if;
         end case;
     end process;
 
@@ -105,16 +110,17 @@ begin
             ball_dir_x_reg, ball_dir_y_reg)
     begin
         -- Default output assignments = hold current
-        ball_dir_x_next <= ball_dir_x_reg;
-        ball_dir_y_next <= ball_dir_y_reg;
+        ball_dir_x_next  <= ball_dir_x_reg;
+        ball_dir_y_next  <= ball_dir_y_reg;
         ball_moving_next <= '0';
+        game_over        <= '0'; -- Default: game not over
 
         case current_state is
             when Idle =>
                 ball_moving_next <= '0';
-
-                ball_dir_x_next <= '0';
-                ball_dir_y_next <= '0';
+                ball_dir_x_next  <= '0'; -- Reset direction
+                ball_dir_y_next  <= '0';
+                game_over        <= '0';
 
             when Playing =>
                 ball_moving_next <= '1';
@@ -135,16 +141,24 @@ begin
                 -- Check paddle collision (near bottom)
                 if (ball_dir_y_reg = '1') and                             -- ball moving down
                    (ball_y_int + ball_radius) >= (MAX_Y - paddle_height) and  -- ball bottom hits top of paddle
-                   (ball_y_int + ball_radius) <= MAX_Y and                 -- ball still above the bottom
-                   (ball_x_int >= paddle_left) and (ball_x_int <= paddle_right) then
+                   (ball_y_int + ball_radius) < MAX_Y and                 -- ball still above the bottom
+                   (ball_x_int >= paddle_left) and (ball_x_int <= paddle_right) then -- ball within paddle bounds
                     ball_dir_y_next <= '0'; -- bounce up
                 end if;
 
+                game_over <= '0';
+
             when WIN =>
                 ball_moving_next <= '0';
+                ball_dir_x_next  <= '0';
+                ball_dir_y_next  <= '0';
+                game_over        <= '0';
 
             when LOSE =>
-                ball_moving_next <= '0';
+                ball_moving_next <= '0'; -- Stop ball movement
+--                ball_dir_x_next  <= '0'; -- Reset directions
+--                ball_dir_y_next  <= '0';
+                game_over        <= '1'; -- Signal game over to stop paddle
 
         end case;
     end process;

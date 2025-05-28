@@ -97,9 +97,9 @@ component ball is
         ball_moving: in std_logic;
         paddle_x : in unsigned(9 downto 0);
         paddle_width: in integer;
+        game_over : in STD_LOGIC;
         ball_pos_x : out STD_LOGIC_VECTOR(9 downto 0);  -- 
         ball_pos_y : out STD_LOGIC_VECTOR(9 downto 0)
-        
     );
 end component;
 
@@ -112,6 +112,7 @@ component paddle
         reset : in STD_LOGIC;
         btn_left_db : in STD_LOGIC;
         btn_right_db : in STD_LOGIC;
+        game_over : in STD_LOGIC;
         paddle_x : out STD_LOGIC_VECTOR(9 downto 0)
     );
 end component;
@@ -129,7 +130,8 @@ component game_controller is
         ball_radius : in integer;
         ball_dir_x : out std_logic;
         ball_dir_y: out std_logic;
-        ball_moving: out std_logic
+        ball_moving: out std_logic;
+        game_over : out std_logic
     );
 end component;
 --=============================================================================
@@ -145,7 +147,7 @@ signal launch_ball : std_logic;
 -- Signal for Game Controller outputs
 signal ball_start_x_sig : unsigned(9 downto 0);
 signal ball_start_y_sig : unsigned(9 downto 0);
-signal ball_dir_x, ball_dir_y, ball_moving : std_logic;
+signal ball_dir_x, ball_dir_y, ball_moving, game_over_sg : std_logic;
 
 constant PADDLE_WIDTH_C : integer := 80;
 constant PADDLE_HEIGHT_C : integer := 10;
@@ -237,7 +239,8 @@ paddle_ctrl: paddle
         reset => reset_db,
         btn_left_db => btn_left_db,
         btn_right_db => btn_right_db,
-        paddle_x => paddle_x
+        paddle_x => paddle_x,
+        game_over => game_over_sg
 );
     
 game_ctrl: game_controller
@@ -253,7 +256,8 @@ game_ctrl: game_controller
         ball_radius => BALL_RADIUS_C,
         ball_dir_x => ball_dir_x,
         ball_dir_y => ball_dir_y,
-        ball_moving => ball_moving
+        ball_moving => ball_moving,
+        game_over => game_over_sg
     );
 
 -- Ball controller (no paddle collision here)
@@ -271,7 +275,8 @@ ball_ctrl : ball
         ball_dir_y => ball_dir_y,
         paddle_x => unsigned(paddle_x),
         paddle_width => PADDLE_WIDTH_C,
-        ball_moving => ball_moving
+        ball_moving => ball_moving,
+        game_over => game_over_sg
     );
    
 
