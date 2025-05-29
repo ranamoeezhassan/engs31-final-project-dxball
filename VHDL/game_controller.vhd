@@ -3,6 +3,15 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity game_controller is
+    generic (
+        PADDLE_WIDTH : integer := 80;
+        PADDLE_HEIGHT : integer := 10;
+        BALL_RADIUS : integer := 10;
+        MAX_X : integer := 640;
+        MAX_Y : integer := 380;
+        MIN_X : integer := 0;
+        MIN_Y : integer := 0
+    );
     port (
         clk         : in std_logic;
         reset       : in std_logic;
@@ -10,9 +19,6 @@ entity game_controller is
         ball_pos_y  : in unsigned(9 downto 0);
         paddle_pos_x : in unsigned(9 downto 0);
         btn_center  : in std_logic;
-        paddle_width: in integer;
-        paddle_height: in integer;
-        ball_radius : in integer;
         ball_dir_x  : out std_logic;
         ball_dir_y  : out std_logic;
         ball_moving : out std_logic;
@@ -21,11 +27,6 @@ entity game_controller is
 end game_controller;
 
 architecture Behavioral of game_controller is
-    constant MAX_X : integer := 640;
-    constant MAX_Y : integer := 380;
-    constant MIN_X : integer := 0;
-    constant MIN_Y : integer := 0;
-
     type state_type is (Idle, Playing, LOSE, WIN);
     signal current_state, next_state : state_type := Idle;
 

@@ -6,6 +6,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use ieee.math_real.all;
 
+
 --=============================================================================
 --Entity Declaration:
 --=============================================================================
@@ -26,9 +27,12 @@ end entity;
 --Architecture
 --=============================================================================
 architecture testbench of ball_paddle_toplevel is
-
 --=============================================================================
 --Component Declaration
+--=============================================================================
+
+--=============================================================================
+--System Clock Generation
 --=============================================================================
 component system_clock_generation is
     Generic( CLK_DIVIDER_RATIO : integer := 25  );
@@ -39,9 +43,15 @@ component system_clock_generation is
         system_clk_port		: out std_logic);
 end component;
 
+--=============================================================================
+--Display Controller
+--=============================================================================
 component display_controller
     generic (
-        BALL_RADIUS : integer := 10
+        BALL_RADIUS    : integer := 15;
+        PADDLE_WIDTH   : integer := 80;
+        PADDLE_HEIGHT  : integer := 10;
+        MAX_Y          : integer := 380
     );
     port (
         clk         : in  std_logic;
@@ -55,6 +65,9 @@ component display_controller
     );
 end component;
 
+--=============================================================================
+--VGA Controller
+--=============================================================================
 component vga_sync is
     port (
         game_clk : in  std_logic; -- 25 MHz game clock
@@ -70,7 +83,7 @@ component vga_sync is
 end component;
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---Input Conditioning:
+--Button Input Conditioning
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 component button_interface is
     Generic(
@@ -85,21 +98,26 @@ end component;
 --Ball Controller:
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 component ball is
-    Generic( 
-        BALL_SPEED : integer := 5;
-        BALL_RADIUS : integer := 15
+    Generic ( 
+        BALL_SPEED  : integer := 5;
+        BALL_RADIUS : integer := 15;
+        PADDLE_WIDTH : integer := 80;
+        PADDLE_HEIGHT : integer := 10;
+        MAX_X : integer := 640;
+        MAX_Y : integer := 380;
+        MIN_X : integer := 0;
+        MIN_Y : integer := 0
     );
     Port (
-        clk : in STD_LOGIC;          -- 25 MHz clock
-        reset : in STD_LOGIC;        -- Active-high reset
-        ball_dir_x : in STD_LOGIC;
-        ball_dir_y : in STD_LOGIC;
-        ball_moving: in std_logic;
-        paddle_x : in unsigned(9 downto 0);
-        paddle_width: in integer;
-        game_over : in STD_LOGIC;
-        ball_pos_x : out STD_LOGIC_VECTOR(9 downto 0);  -- 
-        ball_pos_y : out STD_LOGIC_VECTOR(9 downto 0)
+        clk         : in STD_LOGIC;          -- 25 MHz clock
+        reset       : in STD_LOGIC;          -- Active-high reset
+        ball_dir_x  : in STD_LOGIC;
+        ball_dir_y  : in STD_LOGIC;
+        paddle_x    : in unsigned(9 downto 0);
+        ball_moving : in std_logic;
+        game_over   : in STD_LOGIC;          -- Input from game_controller
+        ball_pos_x  : out STD_LOGIC_VECTOR(9 downto 0);  -- Ball x position
+        ball_pos_y  : out STD_LOGIC_VECTOR(9 downto 0)   -- Ball y position
     );
 end component;
 
@@ -107,6 +125,10 @@ end component;
 --Paddle Controller:
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 component paddle
+    Generic (
+        PADDLE_WIDTH  : integer := 80;
+        MAX_X         : integer := 640
+    );
     Port (
         clk : in STD_LOGIC;
         reset : in STD_LOGIC;
@@ -117,23 +139,46 @@ component paddle
     );
 end component;
 
+--=============================================================================
+--Game Controller
+--=============================================================================
 component game_controller is
+    generic (
+        PADDLE_WIDTH : integer := 80;
+        PADDLE_HEIGHT : integer := 10;
+        BALL_RADIUS : integer := 10;
+        MAX_X : integer := 640;
+        MAX_Y : integer := 380;
+        MIN_X : integer := 0;
+        MIN_Y : integer := 0
+    );
     port (
         clk         : in std_logic;
         reset       : in std_logic;
         ball_pos_x  : in unsigned(9 downto 0);
         ball_pos_y  : in unsigned(9 downto 0);
-        paddle_pos_x : in unsigned(9 downto 0);   
+        paddle_pos_x : in unsigned(9 downto 0);
         btn_center  : in std_logic;
-        paddle_width: in integer;
-        paddle_height: in integer;
-        ball_radius : in integer;
-        ball_dir_x : out std_logic;
-        ball_dir_y: out std_logic;
-        ball_moving: out std_logic;
-        game_over : out std_logic
+        ball_dir_x  : out std_logic;
+        ball_dir_y  : out std_logic;
+        ball_moving : out std_logic;
+        game_over   : out std_logic -- New output to signal LOSE state
     );
 end component;
+
+--=============================================================================
+--Game Constants
+--=============================================================================
+constant PADDLE_WIDTH_C   : integer := 80;
+constant PADDLE_HEIGHT_C  : integer := 10;
+constant PADDLE_Y_C       : integer := 360;
+constant BALL_RADIUS_C    : integer := 10;
+constant BALL_SPEED_C       : integer := 5;
+constant SCREEN_MAX_X     : integer := 640;
+constant SCREEN_MAX_Y     : integer := 380;
+constant SCREEN_MIN_X     : integer := 0;
+constant SCREEN_MIN_Y     : integer := 0;
+
 --=============================================================================
 --Signals
 --=============================================================================
@@ -149,12 +194,8 @@ signal ball_start_x_sig : unsigned(9 downto 0);
 signal ball_start_y_sig : unsigned(9 downto 0);
 signal ball_dir_x, ball_dir_y, ball_moving, game_over_sg : std_logic;
 
-constant PADDLE_WIDTH_C : integer := 80;
-constant PADDLE_HEIGHT_C : integer := 10;
-constant PADDLE_Y_C     : integer := 360;
-constant BALL_RADIUS_C  : integer := 10;
 --=============================================================================
---Port Map
+--Port Mappings
 --=============================================================================
 begin
 
@@ -180,10 +221,7 @@ port map (
 	pixel_y => pixel_y);
 
 
---+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---Wire the input conditioning block into the shell with a port map:
---+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---Wiring the port map in twice generates two separate instances of one component
+-- Left Button
 left_button_debouncer: button_interface
     generic map ( STABLE_TIME => 100 )
     port map (
@@ -193,6 +231,7 @@ left_button_debouncer: button_interface
         button_mp_port => open
     );
 
+-- Right Button
 right_button_debouncer: button_interface
     generic map ( STABLE_TIME => 100 )
     port map (
@@ -202,6 +241,7 @@ right_button_debouncer: button_interface
         button_mp_port => open
     );
 
+-- Center Button
 center_button_debouncer: button_interface
     generic map ( STABLE_TIME => 100 )
     port map (
@@ -211,6 +251,7 @@ center_button_debouncer: button_interface
         button_mp_port => open
     ); 
 
+-- Reset Button
 reset_button_debouncer: button_interface
     generic map ( STABLE_TIME => 100 )
     port map (
@@ -219,8 +260,15 @@ reset_button_debouncer: button_interface
         button_db_port => reset_db,
         button_mp_port => open
     ); 
--- VGA Display Driver
+    
+-- Display Controller
 disp_ctrl: display_controller
+    generic map (
+        BALL_RADIUS =>  BALL_RADIUS_C,
+        PADDLE_WIDTH =>  PADDLE_WIDTH_C,
+        PADDLE_HEIGHT => PADDLE_HEIGHT_C,
+        MAX_Y => SCREEN_MAX_Y
+    )
     port map (
         clk      => system_clk,
         row      => pixel_y,
@@ -234,6 +282,10 @@ disp_ctrl: display_controller
 
 -- Paddle controller
 paddle_ctrl: paddle
+    generic map (
+        PADDLE_WIDTH => PADDLE_WIDTH_C,
+        MAX_X => SCREEN_MAX_X
+        )
     port map (
         clk => system_clk,
         reset => reset_db,
@@ -242,8 +294,18 @@ paddle_ctrl: paddle
         paddle_x => paddle_x,
         game_over => game_over_sg
 );
-    
+
+-- Game Controller
 game_ctrl: game_controller
+    generic map (
+        PADDLE_WIDTH => PADDLE_WIDTH_C,
+        PADDLE_HEIGHT => PADDLE_HEIGHT_C,
+        BALL_RADIUS => BALL_RADIUS_C,
+        MAX_X => SCREEN_MAX_X,
+        MAX_Y => SCREEN_MAX_Y,
+        MIN_X => SCREEN_MIN_X,
+        MIN_Y => SCREEN_MIN_Y
+    )
     port map (
         clk => system_clk,
         reset => reset_db,
@@ -251,20 +313,23 @@ game_ctrl: game_controller
         ball_pos_y => unsigned(ball_pos_y),
         paddle_pos_x => unsigned(paddle_x), 
         btn_center  => btn_center_db,
-        paddle_width => PADDLE_WIDTH_C,
-        paddle_height => PADDLE_HEIGHT_C,
-        ball_radius => BALL_RADIUS_C,
         ball_dir_x => ball_dir_x,
         ball_dir_y => ball_dir_y,
         ball_moving => ball_moving,
         game_over => game_over_sg
     );
-
--- Ball controller (no paddle collision here)
+    
+-- Ball controller 
 ball_ctrl : ball
     generic map (
-        BALL_SPEED => 5,
-        BALL_RADIUS => BALL_RADIUS_C
+        BALL_SPEED => BALL_SPEED_C,
+        BALL_RADIUS => BALL_RADIUS_C,
+        PADDLE_WIDTH => PADDLE_WIDTH_C,
+        PADDLE_HEIGHT => PADDLE_HEIGHT_C,
+        MAX_X => SCREEN_MAX_X,
+        MAX_Y => SCREEN_MAX_Y,
+        MIN_X => SCREEN_MIN_X,
+        MIN_Y => SCREEN_MIN_Y
     )
     port map (
         clk => system_clk,
@@ -274,10 +339,8 @@ ball_ctrl : ball
         ball_dir_x => ball_dir_x,
         ball_dir_y => ball_dir_y,
         paddle_x => unsigned(paddle_x),
-        paddle_width => PADDLE_WIDTH_C,
         ball_moving => ball_moving,
         game_over => game_over_sg
     );
    
-
 end testbench;

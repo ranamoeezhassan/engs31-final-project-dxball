@@ -5,7 +5,13 @@ use IEEE.NUMERIC_STD.ALL;
 entity ball is
     Generic ( 
         BALL_SPEED  : integer := 5;
-        BALL_RADIUS : integer := 15
+        BALL_RADIUS : integer := 15;
+        PADDLE_WIDTH : integer := 80;
+        PADDLE_HEIGHT : integer := 10;
+        MAX_X : integer := 640;
+        MAX_Y : integer := 380;
+        MIN_X : integer := 0;
+        MIN_Y : integer := 0
     );
     Port (
         clk         : in STD_LOGIC;          -- 25 MHz clock
@@ -13,7 +19,6 @@ entity ball is
         ball_dir_x  : in STD_LOGIC;
         ball_dir_y  : in STD_LOGIC;
         paddle_x    : in unsigned(9 downto 0);
-        paddle_width: in integer;
         ball_moving : in std_logic;
         game_over   : in STD_LOGIC;          -- Input from game_controller
         ball_pos_x  : out STD_LOGIC_VECTOR(9 downto 0);  -- Ball x position
@@ -22,11 +27,7 @@ entity ball is
 end ball;
 
 architecture Behavioral of ball is
-    constant MAX_X : integer := 640;
-    constant MAX_Y : integer := 380;
-    constant MIN_X : integer := 0;
-    constant MIN_Y : integer := 0;
-    constant BALL_STARTING_Y : unsigned := to_unsigned(370 - BALL_RADIUS - 1, 10);  -- Center start
+    constant BALL_STARTING_Y : unsigned := to_unsigned(MAX_Y - PADDLE_HEIGHT - BALL_RADIUS - 1, 10);  -- Center start
     signal ball_x_reg : unsigned(9 downto 0);  -- Initialized in process
     signal ball_y_reg : unsigned(9 downto 0) := BALL_STARTING_Y;  -- Center start
     constant FRAME_DIVIDER : integer := 416667;  -- 25MHz / 416667 ~ 60 Hz
