@@ -21,6 +21,7 @@ entity ball is
         paddle_x    : in unsigned(9 downto 0);
         ball_moving : in std_logic;
         game_over   : in STD_LOGIC;          -- Input from game_controller
+        take_sample : in STD_LOGIC;
         ball_pos_x  : out STD_LOGIC_VECTOR(9 downto 0);  -- Ball x position
         ball_pos_y  : out STD_LOGIC_VECTOR(9 downto 0)   -- Ball y position
     );
@@ -30,8 +31,7 @@ architecture Behavioral of ball is
     constant BALL_STARTING_Y : unsigned := to_unsigned(MAX_Y - PADDLE_HEIGHT - BALL_RADIUS - 1, 10);  -- Center start
     signal ball_x_reg : unsigned(9 downto 0);  -- Initialized in process
     signal ball_y_reg : unsigned(9 downto 0) := BALL_STARTING_Y;  -- Center start
-    constant FRAME_DIVIDER : integer := 416667;  -- 25MHz / 416667 ~ 60 Hz
-    signal frame_counter : unsigned(18 downto 0) := (others => '0');
+
 begin
     process(clk)
     begin
@@ -39,11 +39,8 @@ begin
             if reset = '1' then
                 ball_x_reg <= paddle_x + to_unsigned(paddle_width/2, 10);
                 ball_y_reg <= BALL_STARTING_Y;
-                frame_counter <= (others => '0');
             elsif game_over = '0' then  -- Only update if game is not over
-                frame_counter <= frame_counter + 1;
-                if frame_counter = FRAME_DIVIDER - 1 then
-                    frame_counter <= (others => '0');
+                if take_sample = '1' then
                     if ball_moving = '1' then                                            -- Ball moves independently                        
                         if ball_dir_x = '1' and ball_x_reg < MAX_X - BALL_RADIUS then    -- Right trajectory
                             ball_x_reg <= ball_x_reg + BALL_SPEED;

@@ -43,6 +43,17 @@ component system_clock_generation is
         system_clk_port		: out std_logic);
 end component;
 
+component frame_divider is
+    generic (
+        DIVIDE_BY : integer := 416667  -- Number of clock cycles between pulses
+    );
+    port (
+        clk         : in  STD_LOGIC;
+        reset       : in  STD_LOGIC;
+        take_sample : out STD_LOGIC  -- Pulse output, one clk wide
+    );
+end component;
+
 --=============================================================================
 --Display Controller
 --=============================================================================
@@ -116,6 +127,7 @@ component ball is
         paddle_x    : in unsigned(9 downto 0);
         ball_moving : in std_logic;
         game_over   : in STD_LOGIC;          -- Input from game_controller
+        take_sample : in std_logic;
         ball_pos_x  : out STD_LOGIC_VECTOR(9 downto 0);  -- Ball x position
         ball_pos_y  : out STD_LOGIC_VECTOR(9 downto 0)   -- Ball y position
     );
@@ -135,6 +147,7 @@ component paddle
         btn_left_db : in STD_LOGIC;
         btn_right_db : in STD_LOGIC;
         game_over : in STD_LOGIC;
+        take_sample : in STD_LOGIC;
         paddle_x : out STD_LOGIC_VECTOR(9 downto 0)
     );
 end component;
@@ -169,10 +182,10 @@ end component;
 --=============================================================================
 --Game Constants
 --=============================================================================
-constant PADDLE_WIDTH_C   : integer := 80;
-constant PADDLE_HEIGHT_C  : integer := 10;
+constant PADDLE_WIDTH_C   : integer := 300;
+constant PADDLE_HEIGHT_C  : integer := 20;
 constant PADDLE_Y_C       : integer := 360;
-constant BALL_RADIUS_C    : integer := 10;
+constant BALL_RADIUS_C    : integer := 20;
 constant BALL_SPEED_C       : integer := 5;
 constant SCREEN_MAX_X     : integer := 640;
 constant SCREEN_MAX_Y     : integer := 380;
@@ -193,6 +206,7 @@ signal launch_ball : std_logic;
 signal ball_start_x_sig : unsigned(9 downto 0);
 signal ball_start_y_sig : unsigned(9 downto 0);
 signal ball_dir_x, ball_dir_y, ball_moving, game_over_sg : std_logic;
+signal take_sample : std_logic;
 
 --=============================================================================
 --Port Mappings
@@ -206,6 +220,16 @@ generic map(
 port map(
 	input_clk_port 		=> ext_clk,
 	system_clk_port 	=> system_clk);
+	
+
+frame_dividing: frame_divider 
+generic map ( DIVIDE_BY => 416667)
+port map (
+    clk => system_clk,
+    reset => reset_db,
+    take_sample => take_sample
+);
+
 	
 -- VGA Controller
 vga_synchronizer: vga_sync
@@ -292,7 +316,8 @@ paddle_ctrl: paddle
         btn_left_db => btn_left_db,
         btn_right_db => btn_right_db,
         paddle_x => paddle_x,
-        game_over => game_over_sg
+        game_over => game_over_sg,
+        take_sample => take_sample
 );
 
 -- Game Controller
@@ -340,7 +365,8 @@ ball_ctrl : ball
         ball_dir_y => ball_dir_y,
         paddle_x => unsigned(paddle_x),
         ball_moving => ball_moving,
-        game_over => game_over_sg
+        game_over => game_over_sg,
+        take_sample => take_sample
     );
    
 end testbench;
