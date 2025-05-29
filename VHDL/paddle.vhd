@@ -25,19 +25,22 @@ architecture Behavioral of paddle is
 begin
     process(clk, reset)
     begin
-        if reset = '1' then
-            paddle_x_reg <= to_unsigned(280, 10);  -- Center paddle
-            frame_counter <= (others => '0');
-        elsif rising_edge(clk) then
-            if game_over = '0' then  -- Only update if game is not over
-                frame_counter <= frame_counter + 1;
-                if frame_counter = FRAME_DIVIDER - 1 then
-                    frame_counter <= (others => '0');
-                    -- Move paddle if button is held and within bounds
-                    if btn_left_db = '1' and btn_right_db = '0' and paddle_x_reg > 0 then
-                        paddle_x_reg <= paddle_x_reg - 5;  -- Move left by 5 pixels
-                    elsif btn_right_db = '1' and btn_left_db = '0' and paddle_x_reg < PADDLE_MAX_X then
-                        paddle_x_reg <= paddle_x_reg + 5;  -- Move right by 5 pixels
+        if rising_edge(clk) then
+            if reset = '1' then
+                paddle_x_reg <= to_unsigned(280, 10);  -- Center paddle
+                frame_counter <= (others => '0');
+            else
+            
+                if game_over = '0' then  -- Only update if game is not over
+                    frame_counter <= frame_counter + 1;
+                    if frame_counter = FRAME_DIVIDER - 1 then
+                        frame_counter <= (others => '0');
+                        -- Move paddle if button is held and within bounds
+                        if btn_left_db = '1' and btn_right_db = '0' and paddle_x_reg > 0 then
+                            paddle_x_reg <= paddle_x_reg - 5;  -- Move left by 5 pixels
+                        elsif btn_right_db = '1' and btn_left_db = '0' and paddle_x_reg < PADDLE_MAX_X then
+                            paddle_x_reg <= paddle_x_reg + 5;  -- Move right by 5 pixels
+                        end if;
                     end if;
                 end if;
             end if;
