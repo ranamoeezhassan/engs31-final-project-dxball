@@ -13,75 +13,35 @@ entity brick_controller is
     port (
         clk         : in  std_logic;
         reset       : in  std_logic;
-        ball_dir_x  : in  std_logic;
-        ball_dir_y  : in  std_logic;
-        ball_x      : in  std_logic_vector(9 downto 0);
-        ball_y      : in  std_logic_vector(9 downto 0);
-        game_over   : in  std_logic;
-        brick_grid  : out std_logic_vector(BRICK_ROWS * BRICK_COLS - 1 downto 0);
-        brick_hit   : out std_logic;
-        new_dir_x   : out std_logic;                    -- New x direction
-        new_dir_y   : out std_logic;                    -- New y direction
-        win_signal  : out std_logic
+        hit_brick_index : in integer range 0 to BRICK_ROWS*BRICK_COLS - 1;
+        hit_request     : in std_logic;
+        brick_grid  : out std_logic_vector(BRICK_ROWS * BRICK_COLS - 1 downto 0)
     );
 end brick_controller;
 
 architecture Behavioral of brick_controller is
-    signal brick_grid_int : std_logic_vector(BRICK_ROWS * BRICK_COLS - 1 downto 0) := (others => '1');
-    signal brick_count    : integer range 0 to BRICK_ROWS * BRICK_COLS := BRICK_ROWS * BRICK_COLS;
-    signal brick_hit_int  : std_logic := '0';
-    signal prev_hit       : std_logic := '0';
-    signal new_dir_x_int, new_dir_y_int : std_logic;
+    signal brick_grid_reg : std_logic_vector(BRICK_ROWS * BRICK_COLS - 1 downto 0);
 begin
-
-    brick_grid <= brick_grid_int;
-    brick_hit <= brick_hit_int;
-    new_dir_x <= new_dir_x_int;
-    new_dir_y <= new_dir_y_int;
-    
-    process(clk, reset)
-        -- No variables used here
+    process(clk)
     begin
-        if reset = '1' then
-            brick_grid_int <= (others => '1');
-            brick_count <= BRICK_ROWS * BRICK_COLS;
-            brick_hit_int <= '0';
-            prev_hit <= '0';
-            new_dir_x_int <= '0';
-            new_dir_y_int <= '0';
-
-        elsif rising_edge(clk) then
-            brick_hit_int <= '0';
-            if game_over = '0' then
-                for row in 0 to BRICK_ROWS - 1 loop
-                    for col in 0 to BRICK_COLS - 1 loop
-                        -- Only check if this brick is still active
-                        if brick_grid_int(row * BRICK_COLS + col) = '1' and prev_hit = '0' then
-                            -- Calculate brick bounds
-                            if (to_integer(unsigned(ball_x)) + BALL_RADIUS >= col * BRICK_WIDTH) and
-                               (to_integer(unsigned(ball_x)) - BALL_RADIUS <= (col + 1) * BRICK_WIDTH - 1) and
-                               (to_integer(unsigned(ball_y)) + BALL_RADIUS >= row * BRICK_HEIGHT) and
-                               (to_integer(unsigned(ball_y)) - BALL_RADIUS <= (row + 1) * BRICK_HEIGHT - 1) then
-
-                                -- Hit detected
-                                brick_grid_int(row * BRICK_COLS + col) <= '0';
-                                brick_count <= brick_count - 1;
-                                brick_hit_int <= '1';
-                                new_dir_x_int <= not ball_dir_x;  -- Reverse x
-                                new_dir_y_int <= not ball_dir_y;  -- Reverse y
-                            end if;
-                        end if;
-                    end loop;
-                end loop;
-
-                prev_hit <= brick_hit_int;
-
+        if rising_edge(clk) then
+            if reset = '1' then
+                -- Initialize all bricks as active
+                brick_grid_reg <= (others => '1');
             else
-                prev_hit <= '0';
+                -- Detect rising edge of hit_request (new hit)
+                if hit_request = '1' then
+                    -- Only update if the brick is still active
+                    if (hit_brick_index >=40 and hit_brick_index < 50) then
+                        brick_grid_reg(49 downto 40) <= (others => '0');
+                    elsif brick_grid_reg(hit_brick_index) = '1' then
+                        brick_grid_reg(hit_brick_index ) <= '0';  -- Mark brick as hit
+                    end if;
+                end if;
             end if;
         end if;
     end process;
-
-    win_signal <= '1' when brick_count = 0 else '0';
-
+    
+    -- Output the registered brick grid
+    brick_grid <= brick_grid_reg;
 end Behavioral;

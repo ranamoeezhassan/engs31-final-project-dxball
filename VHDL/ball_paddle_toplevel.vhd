@@ -19,7 +19,8 @@ entity ball_paddle_toplevel is
         btn_center : in std_logic;  -- Center button to launch ball
         hsync : out std_logic;
         vsync : out std_logic;
-        rgb : out std_logic_vector(11 downto 0)
+        rgb : out std_logic_vector(11 downto 0);
+        hit_request_out : out std_logic
     );
 end entity;
 
@@ -167,16 +168,9 @@ component brick_controller is
     port (
         clk         : in  std_logic;
         reset       : in  std_logic;
-        ball_x      : in  std_logic_vector(9 downto 0);
-        ball_y      : in  std_logic_vector(9 downto 0);
-        ball_dir_x  : in  std_logic;
-        ball_dir_y  : in  std_logic;
-        game_over   : in  std_logic;
-        brick_grid  : out std_logic_vector(BRICK_ROWS * BRICK_COLS - 1 downto 0);
-        brick_hit   : out std_logic;
-        new_dir_x   : out std_logic;                    -- New x direction
-        new_dir_y   : out std_logic;                    -- New y direction
-        win_signal  : out std_logic
+        hit_brick_index : in integer range 0 to BRICK_ROWS*BRICK_COLS - 1;
+        hit_request     : in std_logic;
+        brick_grid  : out std_logic_vector(BRICK_ROWS * BRICK_COLS - 1 downto 0)
     );
 end component;
 
@@ -191,7 +185,12 @@ component game_controller is
         MAX_X : integer := 640;
         MAX_Y : integer := 380;
         MIN_X : integer := 0;
-        MIN_Y : integer := 0
+        MIN_Y : integer := 0;
+        
+        BRICK_ROWS : integer := 5;
+        BRICK_COLS : integer := 10;
+        BRICK_WIDTH : integer := 64;
+        BRICK_HEIGHT : integer := 32
     );
     port (
         clk         : in std_logic;
@@ -199,18 +198,20 @@ component game_controller is
         ball_pos_x  : in unsigned(9 downto 0);
         ball_pos_y  : in unsigned(9 downto 0);
         paddle_pos_x : in unsigned(9 downto 0);
-        brick_hit   : in std_logic;
-        new_dir_x   : in std_logic;
-        new_dir_y   : in std_logic;
-        win_signal  : in std_logic;
         btn_center  : in std_logic;
+        brick_grid  : in std_logic_vector(BRICK_ROWS * BRICK_COLS - 1 downto 0);
+        hit_brick_index : out integer range 0 to BRICK_ROWS*BRICK_COLS - 1;
+        hit_request     : out std_logic;
         ball_dir_x  : out std_logic;
         ball_dir_y  : out std_logic;
         ball_moving : out std_logic;
-        game_over   : out std_logic; -- New output to signal LOSE state
-        score       : out std_logic_vector(15 downto 0)
+        game_over   : out std_logic;
+        score       : out std_logic_vector(15 downto 0);
+        win_signal  : out std_logic
     );
 end component;
+
+
 
 --=============================================================================
 --Game Constants
@@ -218,8 +219,16 @@ end component;
 constant PADDLE_WIDTH_C   : integer := 80;
 constant PADDLE_HEIGHT_C  : integer := 10;
 constant PADDLE_Y_C       : integer := 360;
+
 constant BALL_RADIUS_C    : integer := 10;
 constant BALL_SPEED_C       : integer := 5;
+
+constant BRICK_ROWS_C         : integer := 5;
+constant BRICK_COLS_C       : integer := 10;
+constant BRICK_WIDTH_C       : integer := 64;
+constant BRICK_HEIGHT_C       : integer := 32;
+
+
 constant SCREEN_MAX_X     : integer := 640;
 constant SCREEN_MAX_Y     : integer := 380;
 constant SCREEN_MIN_X     : integer := 0;
@@ -235,7 +244,8 @@ signal video_on 	: std_logic := '0';
 signal btn_left_db, btn_right_db, btn_center_db, reset_db : std_logic;
 signal launch_ball : std_logic;
 
-signal brick_hit, win_signal : std_logic := '0';
+signal hit_request, win_signal : std_logic := '0';
+signal hit_brick_index: integer range 0 to (BRICK_ROWS_C*BRICK_COLS_C - 1) := 0 ;
 signal brick_grid : std_logic_vector(49 downto 0);
 
 -- Signal for Game Controller outputs
@@ -243,11 +253,13 @@ signal ball_start_x_sig : unsigned(9 downto 0);
 signal ball_start_y_sig : unsigned(9 downto 0);
 signal ball_dir_x, ball_dir_y, new_dir_x, new_dir_y, ball_moving, game_over_sg : std_logic;
 signal take_sample : std_logic;
+signal score : std_logic_vector(15 downto 0);
 
 --=============================================================================
 --Port Mappings
 --=============================================================================
 begin
+hit_request_out <= hit_request;
 
 -- Clock
 clocking: system_clock_generation 
@@ -366,7 +378,11 @@ game_ctrl: game_controller
         MAX_X => SCREEN_MAX_X,
         MAX_Y => SCREEN_MAX_Y,
         MIN_X => SCREEN_MIN_X,
-        MIN_Y => SCREEN_MIN_Y
+        MIN_Y => SCREEN_MIN_Y,
+        BRICK_ROWS => BRICK_ROWS_C,
+        BRICK_COLS => BRICK_COLS_C,
+        BRICK_WIDTH => BRICK_WIDTH_C,
+        BRICK_HEIGHT => BRICK_HEIGHT_C
     )
     port map (
         clk => system_clk,
@@ -375,14 +391,15 @@ game_ctrl: game_controller
         ball_pos_y => unsigned(ball_pos_y),
         paddle_pos_x => unsigned(paddle_x), 
         btn_center  => btn_center_db,
-        brick_hit  => brick_hit,
-        new_dir_x  => new_dir_x,
-        new_dir_y  => new_dir_y,
+        brick_grid  => brick_grid,
+        hit_brick_index => hit_brick_index,
+        hit_request => hit_request,
         win_signal => win_signal,
         ball_dir_x => ball_dir_x,
         ball_dir_y => ball_dir_y,
         ball_moving => ball_moving,
-        game_over => game_over_sg
+        game_over => game_over_sg,
+        score => score
     );
     
 -- Ball controller 
@@ -413,24 +430,17 @@ ball_ctrl : ball
 -- Brick controller 
 brick_ctrl : brick_controller
     generic map (
-        BRICK_ROWS  => 5,
-        BRICK_COLS  => 10,
-        BRICK_WIDTH => 64,
-        BRICK_HEIGHT => 32,
+        BRICK_ROWS  => BRICK_ROWS_C,
+        BRICK_COLS  => BRICK_COLS_C,
+        BRICK_WIDTH => BRICK_WIDTH_C,
+        BRICK_HEIGHT => BRICK_HEIGHT_C,
         BALL_RADIUS => 10
     )
     port map (
         clk         => system_clk,
-        reset       => reset_db,
-        ball_x      => ball_pos_x,
-        ball_y      => ball_pos_y,
-        ball_dir_x  => ball_dir_x,
-        ball_dir_y  => ball_dir_y,
-        game_over   => game_over_sg,
-        brick_grid  => brick_grid,
-        brick_hit   => brick_hit,
-        new_dir_x   => new_dir_x,                    -- New x direction
-        new_dir_y   => new_dir_y,                    -- New y direction
-        win_signal  => win_signal
+        reset       => reset_db,    
+        hit_brick_index => hit_brick_index,
+        hit_request => hit_request,
+        brick_grid => brick_grid
     );
 end testbench;
