@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity display_controller is
     generic (
-        BALL_RADIUS    : integer := 15;
+        BALL_RADIUS    : integer := 10;
         PADDLE_WIDTH   : integer := 80;
         PADDLE_HEIGHT  : integer := 10;
         MAX_Y          : integer := 380
@@ -17,6 +17,7 @@ entity display_controller is
         ball_x      : in  std_logic_vector(9 downto 0); -- Ball X position
         ball_y      : in  std_logic_vector(9 downto 0); -- Ball Y position
         active      : in  std_logic;                    -- Active display signal
+        brick_grid  : in  std_logic_vector(49 downto 0);
         color       : out std_logic_vector(11 downto 0) -- RGB output (4 bits per color)
     );
 end display_controller;
@@ -25,10 +26,18 @@ architecture Behavioral of display_controller is
     constant WHITE : std_logic_vector(11 downto 0) := "111111111111";
     constant BLACK : std_logic_vector(11 downto 0) := "000000000000";
     constant RED   : std_logic_vector(11 downto 0) := "111100000000";
+    constant BLUE  : std_logic_vector(11 downto 0) := "000000001111"; -- Bricks
     constant PADDLE_Y : integer := MAX_Y - PADDLE_HEIGHT;  -- Paddle y-position
     constant BALL_RADIUS_SQ : integer := BALL_RADIUS * BALL_RADIUS;
-    
+    constant BRICK_ROWS : integer := 5;
+    constant BRICK_COLS : integer := 10;
+    constant BRICK_WIDTH : integer := 64;
+    constant BRICK_HEIGHT : integer := 32;    
     signal row_int, col_int, paddle_x_int, ball_x_int, ball_y_int, dist_sq: integer;
+    
+    signal brick_row, brick_col : integer;
+    signal brick_on, paddle_on, ball_on : std_logic;
+    
 begin
     process(clk)
     begin
@@ -56,6 +65,16 @@ begin
                             
                 if dist_sq <= BALL_RADIUS_SQ then
                     color <= RED;
+                end if;
+                
+                -- Check bricks
+                brick_row <= row_int / BRICK_HEIGHT;
+                brick_col <= col_int / BRICK_WIDTH;
+                brick_on <= '0';
+                if brick_row < BRICK_ROWS and brick_col < BRICK_COLS then
+                    if brick_grid(brick_row * BRICK_COLS + brick_col) = '1' then
+                        color <= BLUE;
+                    end if;
                 end if;
             else
                 color <= BLACK;  -- Blank during non-active periods

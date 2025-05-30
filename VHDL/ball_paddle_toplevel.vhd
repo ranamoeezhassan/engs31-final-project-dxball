@@ -72,6 +72,7 @@ component display_controller
         ball_x      : in  std_logic_vector(9 downto 0);
         ball_y      : in  std_logic_vector(9 downto 0);
         active      : in  std_logic;
+        brick_grid  : in  std_logic_vector(49 downto 0);
         color       : out std_logic_vector(11 downto 0)
     );
 end component;
@@ -111,7 +112,7 @@ end component;
 component ball is
     Generic ( 
         BALL_SPEED  : integer := 5;
-        BALL_RADIUS : integer := 15;
+        BALL_RADIUS : integer := 10;
         PADDLE_WIDTH : integer := 80;
         PADDLE_HEIGHT : integer := 10;
         MAX_X : integer := 640;
@@ -153,6 +154,33 @@ component paddle
 end component;
 
 --=============================================================================
+--Brick Controller
+--=============================================================================
+component brick_controller is
+    generic (
+        BRICK_ROWS   : integer := 5;
+        BRICK_COLS   : integer := 10;
+        BRICK_WIDTH  : integer := 64;
+        BRICK_HEIGHT : integer := 32;
+        BALL_RADIUS  : integer := 10
+    );
+    port (
+        clk         : in  std_logic;
+        reset       : in  std_logic;
+        ball_x      : in  std_logic_vector(9 downto 0);
+        ball_y      : in  std_logic_vector(9 downto 0);
+        ball_dir_x  : in  std_logic;
+        ball_dir_y  : in  std_logic;
+        game_over   : in  std_logic;
+        brick_grid  : out std_logic_vector(BRICK_ROWS * BRICK_COLS - 1 downto 0);
+        brick_hit   : out std_logic;
+        new_dir_x   : out std_logic;                    -- New x direction
+        new_dir_y   : out std_logic;                    -- New y direction
+        win_signal  : out std_logic
+    );
+end component;
+
+--=============================================================================
 --Game Controller
 --=============================================================================
 component game_controller is
@@ -171,21 +199,26 @@ component game_controller is
         ball_pos_x  : in unsigned(9 downto 0);
         ball_pos_y  : in unsigned(9 downto 0);
         paddle_pos_x : in unsigned(9 downto 0);
+        brick_hit   : in std_logic;
+        new_dir_x   : in std_logic;
+        new_dir_y   : in std_logic;
+        win_signal  : in std_logic;
         btn_center  : in std_logic;
         ball_dir_x  : out std_logic;
         ball_dir_y  : out std_logic;
         ball_moving : out std_logic;
-        game_over   : out std_logic -- New output to signal LOSE state
+        game_over   : out std_logic; -- New output to signal LOSE state
+        score       : out std_logic_vector(15 downto 0)
     );
 end component;
 
 --=============================================================================
 --Game Constants
 --=============================================================================
-constant PADDLE_WIDTH_C   : integer := 300;
-constant PADDLE_HEIGHT_C  : integer := 20;
+constant PADDLE_WIDTH_C   : integer := 80;
+constant PADDLE_HEIGHT_C  : integer := 10;
 constant PADDLE_Y_C       : integer := 360;
-constant BALL_RADIUS_C    : integer := 20;
+constant BALL_RADIUS_C    : integer := 10;
 constant BALL_SPEED_C       : integer := 5;
 constant SCREEN_MAX_X     : integer := 640;
 constant SCREEN_MAX_Y     : integer := 380;
@@ -202,10 +235,13 @@ signal video_on 	: std_logic := '0';
 signal btn_left_db, btn_right_db, btn_center_db, reset_db : std_logic;
 signal launch_ball : std_logic;
 
+signal brick_hit, win_signal : std_logic := '0';
+signal brick_grid : std_logic_vector(49 downto 0);
+
 -- Signal for Game Controller outputs
 signal ball_start_x_sig : unsigned(9 downto 0);
 signal ball_start_y_sig : unsigned(9 downto 0);
-signal ball_dir_x, ball_dir_y, ball_moving, game_over_sg : std_logic;
+signal ball_dir_x, ball_dir_y, new_dir_x, new_dir_y, ball_moving, game_over_sg : std_logic;
 signal take_sample : std_logic;
 
 --=============================================================================
@@ -301,6 +337,7 @@ disp_ctrl: display_controller
         ball_x   => ball_pos_x,
         ball_y   => ball_pos_y,
         active   => video_on,
+        brick_grid => brick_grid,
         color    => rgb
     );
 
@@ -338,6 +375,10 @@ game_ctrl: game_controller
         ball_pos_y => unsigned(ball_pos_y),
         paddle_pos_x => unsigned(paddle_x), 
         btn_center  => btn_center_db,
+        brick_hit  => brick_hit,
+        new_dir_x  => new_dir_x,
+        new_dir_y  => new_dir_y,
+        win_signal => win_signal,
         ball_dir_x => ball_dir_x,
         ball_dir_y => ball_dir_y,
         ball_moving => ball_moving,
@@ -368,5 +409,28 @@ ball_ctrl : ball
         game_over => game_over_sg,
         take_sample => take_sample
     );
-   
+    
+-- Brick controller 
+brick_ctrl : brick_controller
+    generic map (
+        BRICK_ROWS  => 5,
+        BRICK_COLS  => 10,
+        BRICK_WIDTH => 64,
+        BRICK_HEIGHT => 32,
+        BALL_RADIUS => 10
+    )
+    port map (
+        clk         => system_clk,
+        reset       => reset_db,
+        ball_x      => ball_pos_x,
+        ball_y      => ball_pos_y,
+        ball_dir_x  => ball_dir_x,
+        ball_dir_y  => ball_dir_y,
+        game_over   => game_over_sg,
+        brick_grid  => brick_grid,
+        brick_hit   => brick_hit,
+        new_dir_x   => new_dir_x,                    -- New x direction
+        new_dir_y   => new_dir_y,                    -- New y direction
+        win_signal  => win_signal
+    );
 end testbench;

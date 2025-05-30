@@ -19,10 +19,15 @@ entity game_controller is
         ball_pos_y  : in unsigned(9 downto 0);
         paddle_pos_x : in unsigned(9 downto 0);
         btn_center  : in std_logic;
+        brick_hit   : in std_logic;
+        new_dir_x   : in std_logic;
+        new_dir_y   : in std_logic;
+        win_signal  : in std_logic;
         ball_dir_x  : out std_logic;
         ball_dir_y  : out std_logic;
         ball_moving : out std_logic;
-        game_over   : out std_logic -- New output to signal LOSE state
+        game_over   : out std_logic; -- New output to signal LOSE state
+        score       : out std_logic_vector(15 downto 0)
     );
 end game_controller;
 
@@ -41,6 +46,7 @@ architecture Behavioral of game_controller is
     signal ball_x_int, ball_y_int : integer := 0;
     signal paddle_x_int : integer := 0;
     signal paddle_left, paddle_right : integer := 0;
+    signal score_int : unsigned(15 downto 0) := (others => '0');
 
 begin
     -- Datapath
@@ -57,6 +63,7 @@ begin
                 ball_dir_x_reg  <= '0'; -- initial direction left
                 ball_dir_y_reg  <= '0'; -- initial direction up
                 ball_moving_reg <= '0';
+                score_int <= (others => '0');
             else
                 -- Update registered directions and moving with next computed values
                 ball_dir_x_reg  <= ball_dir_x_next;
@@ -70,6 +77,7 @@ begin
     ball_dir_x  <= ball_dir_x_reg;
     ball_dir_y  <= ball_dir_y_reg;
     ball_moving <= ball_moving_reg;
+    score <= std_logic_vector(score_int);
     
     ------- FSM --------
     -- State register
@@ -147,6 +155,12 @@ begin
                     ball_dir_y_next <= '0'; -- bounce up
                 end if;
 
+                -- Brick collision
+                if brick_hit = '1' then
+                    ball_dir_x_next <= new_dir_x;
+                    ball_dir_y_next <= new_dir_y;
+                end if;
+                
                 game_over <= '0';
 
             when WIN =>
@@ -157,11 +171,22 @@ begin
 
             when LOSE =>
                 ball_moving_next <= '0'; -- Stop ball movement
---                ball_dir_x_next  <= '0'; -- Reset directions
---                ball_dir_y_next  <= '0';
+                ball_dir_x_next  <= '0'; -- Reset directions
+                ball_dir_y_next  <= '0';
                 game_over        <= '1'; -- Signal game over to stop paddle
 
         end case;
     end process;
-
+    
+    -- Score update
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            if reset = '1' then
+                score_int <= (others => '0');
+            elsif brick_hit = '1' then
+                score_int <= score_int + 1;
+            end if;
+        end if;
+    end process;
 end Behavioral;
