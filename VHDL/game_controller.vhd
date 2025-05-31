@@ -29,9 +29,10 @@ entity game_controller is
         ball_dir_x  : out std_logic;
         ball_dir_y  : out std_logic;
         ball_moving : out std_logic;
-        game_over   : out std_logic;
-        score       : out std_logic_vector(15 downto 0);
         win_signal  : out std_logic
+        game_over   : out std_logic; -- New output to signal LOSE state
+        score       : out std_logic_vector(15 downto 0);
+        state_out   : out std_logic_vector(1 downto 0) -- New output for state
     );
 end game_controller;
 
@@ -68,8 +69,18 @@ begin
         brick_col <= to_integer(ball_pos_x) / BRICK_WIDTH;
         brick_index <= brick_row * BRICK_COLS + brick_col;
     end process;
-
-
+    -- Map current_state to state_out
+    process(current_state)
+    begin
+        case current_state is
+            when Idle => state_out <= "00";
+            when Playing => state_out <= "01";
+            when LOSE => state_out <= "10";
+            when WIN => state_out <= "11";
+        end case;
+    end process;
+          
+    -- Datapath
     process(clk)
     begin
         if rising_edge(clk) then
@@ -100,7 +111,7 @@ begin
                 ball_dir_x_reg  <= ball_dir_x_next;
                 ball_dir_y_reg  <= ball_dir_y_next;
                 ball_moving_reg <= ball_moving_next;
-                
+              
                 -- Only register brick hit once per contact
                 if brick_hit = '1' and recent_brick_hit = '0' then
                     score_int <= score_int + 1;
@@ -115,6 +126,8 @@ begin
         end if;
     end process;
     
+    ------- FSM --------
+    -- State register
     process(clk)
     begin
         if rising_edge(clk) then
@@ -226,7 +239,6 @@ begin
                 game_over        <= '1';
         end case;
     end process;
-
 	ball_dir_x <= ball_dir_x_reg;
     ball_dir_y <= ball_dir_y_reg;
     ball_moving <= ball_moving_reg;
