@@ -56,6 +56,8 @@ set_property IOSTANDARD LVCMOS33 [get_ports hsync]
 set_property PACKAGE_PIN R19     [get_ports vsync]						
 set_property IOSTANDARD LVCMOS33 [get_ports vsync]
 
+
+
 ##====================================================================	
 ## 7 segment display
 ##====================================================================
