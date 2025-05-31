@@ -61,6 +61,15 @@ architecture Behavioral of game_controller is
     signal recent_brick_hit : std_logic := '0';
 begin
 
+	-- Calculate brick_row, brick_col, and brick_index asynchronously
+    process(ball_pos_x, ball_pos_y)
+    begin
+        brick_row <= to_integer(ball_pos_y) / BRICK_HEIGHT;
+        brick_col <= to_integer(ball_pos_x) / BRICK_WIDTH;
+        brick_index <= brick_row * BRICK_COLS + brick_col;
+    end process;
+
+
     process(clk)
     begin
         if rising_edge(clk) then
@@ -73,10 +82,6 @@ begin
             paddle_x_int <= to_integer(paddle_pos_x);
             paddle_left  <= paddle_x_int;
             paddle_right <= paddle_x_int + PADDLE_WIDTH;
-
-            brick_row <= to_integer(ball_pos_y) / BRICK_HEIGHT;
-            brick_col <= to_integer(ball_pos_x) / BRICK_WIDTH;
-            brick_index <= brick_row * BRICK_COLS + brick_col - 1;
 
             brick_left   <= brick_col * BRICK_WIDTH;
             brick_right  <= brick_left + BRICK_WIDTH;
@@ -109,14 +114,7 @@ begin
             end if;
         end if;
     end process;
-
-    ball_dir_x <= ball_dir_x_reg;
-    ball_dir_y <= ball_dir_y_reg;
-    ball_moving <= ball_moving_reg;
-    hit_request <= hit_request_reg;
-    hit_brick_index <= hit_brick_index_reg;
-    score <= std_logic_vector(score_int);
-
+    
     process(clk)
     begin
         if rising_edge(clk) then
@@ -183,25 +181,29 @@ begin
                    (ball_x_int >= paddle_left) and (ball_x_int <= paddle_right) then
                     ball_dir_y_next <= '0';
                 end if;
-
+                
                 if brick_row >= 0 and brick_row < BRICK_ROWS and
                    brick_col >= 0 and brick_col < BRICK_COLS then
-                    if brick_grid(brick_index) = '1' then
-                        if (ball_x_int + BALL_RADIUS >= brick_left) and
-                           (ball_x_int - BALL_RADIUS <= brick_right) and
-                           (ball_y_int + BALL_RADIUS >= brick_top) and
-                           (ball_y_int - BALL_RADIUS <= brick_bottom) then
-                            brick_hit <= '1';
 
-                            if (prev_ball_x + BALL_RADIUS <= brick_left) or
-                               (prev_ball_x - BALL_RADIUS >= brick_right) then
-                                ball_dir_x_next <= not ball_dir_x_reg;
-                            elsif (prev_ball_y + BALL_RADIUS <= brick_top) or
-                                  (prev_ball_y - BALL_RADIUS >= brick_bottom) then
-                                ball_dir_y_next <= not ball_dir_y_reg;
-                            else
-                                ball_dir_y_next <= not ball_dir_y_reg;
-                            end if;
+                    -- Only access brick_grid if brick_index is in range
+                    if brick_index >= 0 and brick_index < BRICK_ROWS * BRICK_COLS then
+                        if brick_grid(brick_index) = '1' then
+                             if (ball_x_int + BALL_RADIUS >= brick_left) and
+                             (ball_x_int - BALL_RADIUS <= brick_right) and
+                             (ball_y_int + BALL_RADIUS >= brick_top) and
+                             (ball_y_int - BALL_RADIUS <= brick_bottom) then
+                                brick_hit <= '1';
+
+                                if (prev_ball_x + BALL_RADIUS <= brick_left) or
+                                   (prev_ball_x - BALL_RADIUS >= brick_right) then
+                                    ball_dir_x_next <= not ball_dir_x_reg;
+                                elsif (prev_ball_y + BALL_RADIUS <= brick_top) or
+                                      (prev_ball_y - BALL_RADIUS >= brick_bottom) then
+                                    ball_dir_y_next <= not ball_dir_y_reg;
+                                else
+                                    ball_dir_y_next <= not ball_dir_y_reg;
+                                end if;
+                          	end if;
                         end if;
                     end if;
                 end if;
@@ -219,5 +221,12 @@ begin
                 game_over        <= '1';
         end case;
     end process;
+
+	ball_dir_x <= ball_dir_x_reg;
+    ball_dir_y <= ball_dir_y_reg;
+    ball_moving <= ball_moving_reg;
+    hit_request <= hit_request_reg;
+    hit_brick_index <= hit_brick_index_reg;
+    score <= std_logic_vector(score_int);
 
 end Behavioral;
