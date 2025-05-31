@@ -147,7 +147,8 @@ begin
 
     process(current_state, ball_x_int, ball_y_int, paddle_left, paddle_right,
             ball_dir_x_reg, ball_dir_y_reg, brick_grid, brick_row, brick_col, brick_index,
-            brick_left, brick_right, brick_top, brick_bottom, prev_ball_x, prev_ball_y)
+            brick_left, brick_right, brick_top, brick_bottom, prev_ball_x, prev_ball_y,
+            recent_brick_hit)
     begin
         ball_dir_x_next  <= ball_dir_x_reg;
         ball_dir_y_next  <= ball_dir_y_reg;
@@ -193,16 +194,20 @@ begin
                              (ball_y_int + BALL_RADIUS >= brick_top) and
                              (ball_y_int - BALL_RADIUS <= brick_bottom) then
                                 brick_hit <= '1';
-
-                                if (prev_ball_x + BALL_RADIUS <= brick_left) or
-                                   (prev_ball_x - BALL_RADIUS >= brick_right) then
-                                    ball_dir_x_next <= not ball_dir_x_reg;
-                                elsif (prev_ball_y + BALL_RADIUS <= brick_top) or
-                                      (prev_ball_y - BALL_RADIUS >= brick_bottom) then
-                                    ball_dir_y_next <= not ball_dir_y_reg;
-                                else
-                                    ball_dir_y_next <= not ball_dir_y_reg;
+                                
+                                if recent_brick_hit = '0' then
+                                    if (prev_ball_x + BALL_RADIUS <= brick_left) or
+                                       (prev_ball_x - BALL_RADIUS >= brick_right) then
+                                        ball_dir_x_next <= not ball_dir_x_reg;
+                                    elsif (prev_ball_y + BALL_RADIUS <= brick_top) or
+                                          (prev_ball_y - BALL_RADIUS >= brick_bottom) then
+                                        ball_dir_y_next <= not ball_dir_y_reg;
+                                    else
+                                        ball_dir_y_next <= not ball_dir_y_reg;
+                                    end if;
                                 end if;
+
+                                
                           	end if;
                         end if;
                     end if;

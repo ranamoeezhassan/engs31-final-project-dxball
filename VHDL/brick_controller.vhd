@@ -32,9 +32,7 @@ begin
                 -- Detect rising edge of hit_request (new hit)
                 if hit_request = '1' then
                     -- Only update if the brick is still active
-                    if (hit_brick_index >=40 and hit_brick_index < 50) then
-                        brick_grid_reg(49 downto 40) <= (others => '0');
-                    elsif brick_grid_reg(hit_brick_index) = '1' then
+                    if brick_grid_reg(hit_brick_index) = '1' then
                         brick_grid_reg(hit_brick_index ) <= '0';  -- Mark brick as hit
                     end if;
                 end if;
