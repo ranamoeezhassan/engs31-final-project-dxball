@@ -27,7 +27,8 @@ entity game_controller is
         ball_dir_y  : out std_logic;
         ball_moving : out std_logic;
         game_over   : out std_logic; -- New output to signal LOSE state
-        score       : out std_logic_vector(15 downto 0)
+        score       : out std_logic_vector(15 downto 0);
+        state_out   : out std_logic_vector(1 downto 0) -- New output for state
     );
 end game_controller;
 
@@ -49,6 +50,16 @@ architecture Behavioral of game_controller is
     signal score_int : unsigned(15 downto 0) := (others => '0');
 
 begin
+    -- Map current_state to state_out
+    process(current_state)
+    begin
+        case current_state is
+            when Idle => state_out <= "00";
+            when Playing => state_out <= "01";
+            when LOSE => state_out <= "10";
+            when WIN => state_out <= "11";
+        end case;
+    end process;
     -- Datapath
     process(clk)
     begin
@@ -69,16 +80,13 @@ begin
                 ball_dir_x_reg  <= ball_dir_x_next;
                 ball_dir_y_reg  <= ball_dir_y_next;
                 ball_moving_reg <= ball_moving_next;
+                if brick_hit = '1' and current_state = Playing then
+                    score_int <= score_int + 1;
+                end if;            
             end if;
         end if;
     end process;
-    
-    -- Output ports
-    ball_dir_x  <= ball_dir_x_reg;
-    ball_dir_y  <= ball_dir_y_reg;
-    ball_moving <= ball_moving_reg;
-    score <= std_logic_vector(score_int);
-    
+        
     ------- FSM --------
     -- State register
     process(clk)
@@ -178,15 +186,22 @@ begin
         end case;
     end process;
     
-    -- Score update
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            if reset = '1' then
-                score_int <= (others => '0');
-            elsif brick_hit = '1' then
-                score_int <= score_int + 1;
-            end if;
-        end if;
-    end process;
+--    -- Score update
+--    process(clk)
+--    begin
+--        if rising_edge(clk) then
+--            if reset = '1' then
+--                score_int <= (others => '0');
+--            elsif brick_hit = '1' then
+--                score_int <= score_int + 1;
+--            end if;
+--        end if;
+--    end process;
+    
+    -- Output ports
+    ball_dir_x  <= ball_dir_x_reg;
+    ball_dir_y  <= ball_dir_y_reg;
+    ball_moving <= ball_moving_reg;
+    score <= std_logic_vector(score_int);
+
 end Behavioral;

@@ -19,7 +19,11 @@ entity ball_paddle_toplevel is
         btn_center : in std_logic;  -- Center button to launch ball
         hsync : out std_logic;
         vsync : out std_logic;
-        rgb : out std_logic_vector(11 downto 0)
+        rgb : out std_logic_vector(11 downto 0);
+        seg_ext_port		    : out std_logic_vector(0 to 6);
+        dp_ext_port				: out std_logic;
+        an_ext_port				: out std_logic_vector(3 downto 0)
+
     );
 end entity;
 
@@ -180,6 +184,35 @@ component brick_controller is
     );
 end component;
 
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--Binary to BCD converter:
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+component bin2bcd is
+    Port (
+        bin_in  : in std_logic_vector(15 downto 0); -- Input binary score
+        game_state : in std_logic_vector(1 downto 0);    -- Game state input
+        y0_display    : out std_logic_vector(4 downto 0); -- Units
+        y1_display    : out std_logic_vector(4 downto 0); -- Tens
+        y2_display    : out std_logic_vector(4 downto 0); -- Hundreds
+        y3_display    : out std_logic_vector(4 downto 0)  -- Thousands
+    );
+end component;
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--7-Segment Display:
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+component mux7seg is
+    Port ( clk_port 	: in  std_logic;						--should get the 1 MHz system clk
+         y3_port 		: in  std_logic_vector(4 downto 0);		--left most digit
+         y2_port 		: in  std_logic_vector(4 downto 0);		--center left digit
+         y1_port 		: in  std_logic_vector(4 downto 0);		--center right digit
+         y0_port 		: in  std_logic_vector(4 downto 0);		--right most digit
+         dp_set_port 	: in  std_logic_vector(3 downto 0);     --decimal points
+         seg_port 	: out  std_logic_vector(0 to 6);		--segments (a...g)
+         dp_port 		: out  std_logic;						--decimal point
+         an_port 		: out  std_logic_vector (3 downto 0) );	--anodes
+end component;
+
 --=============================================================================
 --Game Controller
 --=============================================================================
@@ -208,7 +241,8 @@ component game_controller is
         ball_dir_y  : out std_logic;
         ball_moving : out std_logic;
         game_over   : out std_logic; -- New output to signal LOSE state
-        score       : out std_logic_vector(15 downto 0)
+        score       : out std_logic_vector(15 downto 0);
+        state_out  : out std_logic_vector(1 downto 0)
     );
 end component;
 
@@ -244,6 +278,15 @@ signal ball_start_y_sig : unsigned(9 downto 0);
 signal ball_dir_x, ball_dir_y, new_dir_x, new_dir_y, ball_moving, game_over_sg : std_logic;
 signal take_sample : std_logic;
 
+-- Signals (add to existing signal declarations)
+signal y3_display, y2_display, y1_display, y0_display : std_logic_vector(3 downto 0);
+signal dp_set : std_logic_vector(3 downto 0) := "0000";
+signal score : std_logic_vector(15 downto 0);
+signal overflow         : std_logic := '0'; --You get this one for free
+signal game_state : std_logic_vector(1 downto 0);
+
+-- Internal signals
+signal bcd0, bcd1, bcd2, bcd3 : std_logic_vector(4 downto 0);
 --=============================================================================
 --Port Mappings
 --=============================================================================
@@ -256,7 +299,6 @@ generic map(
 port map(
 	input_clk_port 		=> ext_clk,
 	system_clk_port 	=> system_clk);
-	
 
 frame_dividing: frame_divider 
 generic map ( DIVIDE_BY => 416667)
@@ -357,6 +399,31 @@ paddle_ctrl: paddle
         take_sample => take_sample
 );
 
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--Wire the 7-segment display into the shell with a port map:
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+binary2bcd : bin2bcd port map(
+        bin_in  	=> score,
+        game_state  => game_state,
+        y0_display    	=> bcd0,
+        y1_display    	=> bcd1,
+        y2_display    	=> bcd2,
+        y3_display    	=> bcd3
+    );
+
+---- prepend the overflow with 3 '0's
+
+seven_seg: mux7seg port map(
+        clk_port	=> system_clk,		--should get the 1 MHz system clk
+        y3_port		=> bcd3,		--left most digit
+        y2_port 	=> bcd2,		--center left digit
+        y1_port 	=> bcd1,		--center right digit (don't use this one)
+        y0_port 	=> bcd0,		--right most digit
+        dp_set_port => dp_set,	--you get this one for free too
+        seg_port 	=> seg_ext_port,
+        dp_port 	=> dp_ext_port,
+        an_port 	=> an_ext_port);
+
 -- Game Controller
 game_ctrl: game_controller
     generic map (
@@ -382,7 +449,9 @@ game_ctrl: game_controller
         ball_dir_x => ball_dir_x,
         ball_dir_y => ball_dir_y,
         ball_moving => ball_moving,
-        game_over => game_over_sg
+        game_over => game_over_sg,
+        score => score,
+        state_out => game_state
     );
     
 -- Ball controller 
