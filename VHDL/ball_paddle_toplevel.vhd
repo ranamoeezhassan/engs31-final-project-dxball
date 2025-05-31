@@ -20,7 +20,6 @@ entity ball_paddle_toplevel is
         hsync : out std_logic;
         vsync : out std_logic;
         rgb : out std_logic_vector(11 downto 0);
-        hit_request_out : out std_logic
         seg_ext_port		    : out std_logic_vector(0 to 6);
         dp_ext_port				: out std_logic;
         an_ext_port				: out std_logic_vector(3 downto 0)
@@ -238,7 +237,7 @@ component game_controller is
         ball_dir_y  : out std_logic;
         ball_moving : out std_logic;
         game_over   : out std_logic;
-        win_signal  : out std_logic
+        win_signal  : out std_logic;
         score       : out std_logic_vector(15 downto 0);
         state_out  : out std_logic_vector(1 downto 0)
     );
@@ -291,7 +290,6 @@ signal score : std_logic_vector(15 downto 0);
 -- Signals (add to existing signal declarations)
 signal y3_display, y2_display, y1_display, y0_display : std_logic_vector(3 downto 0);
 signal dp_set : std_logic_vector(3 downto 0) := "0000";
-signal score : std_logic_vector(15 downto 0);
 signal overflow         : std_logic := '0'; --You get this one for free
 signal game_state : std_logic_vector(1 downto 0);
 
@@ -301,7 +299,6 @@ signal bcd0, bcd1, bcd2, bcd3 : std_logic_vector(4 downto 0);
 --Port Mappings
 --=============================================================================
 begin
-hit_request_out <= hit_request;
 
 -- Clock
 clocking: system_clock_generation 

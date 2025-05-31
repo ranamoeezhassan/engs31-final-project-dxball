@@ -29,7 +29,7 @@ entity game_controller is
         ball_dir_x  : out std_logic;
         ball_dir_y  : out std_logic;
         ball_moving : out std_logic;
-        win_signal  : out std_logic
+        win_signal  : out std_logic;
         game_over   : out std_logic; -- New output to signal LOSE state
         score       : out std_logic_vector(15 downto 0);
         state_out   : out std_logic_vector(1 downto 0) -- New output for state
