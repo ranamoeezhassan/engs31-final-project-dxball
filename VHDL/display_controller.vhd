@@ -18,6 +18,8 @@ entity display_controller is
         ball_y      : in  std_logic_vector(9 downto 0); -- Ball Y position
         active      : in  std_logic;                    -- Active display signal
         brick_grid  : in  std_logic_vector(49 downto 0);
+        state       : in std_logic_vector(1 downto 0);
+        brick_rom_color : in std_logic_vector(11 downto 0);
         color       : out std_logic_vector(11 downto 0) -- RGB output (4 bits per color)
     );
 end display_controller;
@@ -73,7 +75,7 @@ begin
                 brick_on <= '0';
                 if brick_row < BRICK_ROWS and brick_col < BRICK_COLS then
                     if brick_grid(brick_row * BRICK_COLS + brick_col) = '1' then
-                        color <= BLUE;
+                        color <= brick_rom_color;
                     end if;
                 end if;
             else

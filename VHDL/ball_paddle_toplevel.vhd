@@ -76,6 +76,8 @@ component display_controller
         ball_y      : in  std_logic_vector(9 downto 0);
         active      : in  std_logic;
         brick_grid  : in  std_logic_vector(49 downto 0);
+        state       : in std_logic_vector(1 downto 0);
+        brick_rom_color  : in std_logic_vector(11 downto 0);
         color       : out std_logic_vector(11 downto 0)
     );
 end component;
@@ -243,6 +245,14 @@ component game_controller is
     );
 end component;
 
+component brick_rom is
+  Port (
+    clk        : in  std_logic;
+    row        : in  std_logic_vector(9 downto 0);
+    col        : in  std_logic_vector(9 downto 0);
+    color_data : out std_logic_vector(11 downto 0)
+  );
+end component;
 
 
 --=============================================================================
@@ -253,7 +263,7 @@ constant PADDLE_HEIGHT_C  : integer := 10;
 constant PADDLE_Y_C       : integer := 360;
 
 constant BALL_RADIUS_C    : integer := 10;
-constant BALL_SPEED_C       : integer := 5;
+constant BALL_SPEED_C       : integer := 3;
 
 constant BRICK_ROWS_C         : integer := 5;
 constant BRICK_COLS_C       : integer := 10;
@@ -295,6 +305,8 @@ signal game_state : std_logic_vector(1 downto 0);
 
 -- Internal signals
 signal bcd0, bcd1, bcd2, bcd3 : std_logic_vector(4 downto 0);
+
+signal brick_color : std_logic_vector(11 downto 0);
 --=============================================================================
 --Port Mappings
 --=============================================================================
@@ -388,6 +400,8 @@ disp_ctrl: display_controller
         ball_y   => ball_pos_y,
         active   => video_on,
         brick_grid => brick_grid,
+        state => game_state,
+        brick_rom_color => brick_color,
         color    => rgb
     );
 
@@ -507,4 +521,13 @@ brick_ctrl : brick_controller
         hit_request => hit_request,
         brick_grid => brick_grid
     );
+    
+brick_rom_data: brick_rom  port map (
+    clk => system_clk,
+    row => pixel_y,
+    col => pixel_x,
+    color_data => brick_color
+  );
+  
+  
 end testbench;
