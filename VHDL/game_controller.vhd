@@ -63,7 +63,7 @@ architecture Behavioral of game_controller is
 begin
 
 	-- Calculate brick_row, brick_col, and brick_index asynchronously
-    process(ball_pos_x, ball_pos_y)
+    process(ball_pos_x, ball_pos_y, brick_row, brick_col)
     begin
         brick_row <= to_integer(ball_pos_y) / BRICK_HEIGHT;
         brick_col <= to_integer(ball_pos_x) / BRICK_WIDTH;
