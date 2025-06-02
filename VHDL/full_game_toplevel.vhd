@@ -77,7 +77,6 @@ component display_controller
         active      : in  std_logic;
         brick_grid  : in  std_logic_vector(49 downto 0);
         state       : in std_logic_vector(1 downto 0);
-        brick_rom_color  : in std_logic_vector(11 downto 0);
         color       : out std_logic_vector(11 downto 0)
     );
 end component;
@@ -262,7 +261,7 @@ constant PADDLE_WIDTH_C   : integer := 80;
 constant PADDLE_HEIGHT_C  : integer := 10;
 constant PADDLE_Y_C       : integer := 360;
 
-constant BALL_RADIUS_C    : integer := 10;
+constant BALL_RADIUS_C    : integer := 12;
 constant BALL_SPEED_C       : integer := 3;
 
 constant BRICK_ROWS_C         : integer := 5;
@@ -305,9 +304,6 @@ signal game_state : std_logic_vector(1 downto 0);
 
 -- Internal signals
 signal bcd0, bcd1, bcd2, bcd3 : std_logic_vector(4 downto 0);
-
-signal brick_color : std_logic_vector(11 downto 0);
-signal game_over_color : std_logic_vector(11 downto 0);
 
 --=============================================================================
 --Port Mappings
@@ -403,7 +399,6 @@ disp_ctrl: display_controller
         active   => video_on,
         brick_grid => brick_grid,
         state => game_state,
-        brick_rom_color => brick_color,
         color    => rgb
     );
 
@@ -524,13 +519,6 @@ brick_ctrl : brick_controller
         brick_grid => brick_grid
     );
     
-brick_rom_data: brick_rom  port map (
-    clk => system_clk,
-    row => pixel_y,
-    col => pixel_x,
-    color_data => brick_color
-  );
-
 
   
   

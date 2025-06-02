@@ -212,8 +212,8 @@ begin
                                     if (prev_ball_x + BALL_RADIUS <= brick_left) or
                                        (prev_ball_x - BALL_RADIUS >= brick_right) then
                                         ball_dir_x_next <= not ball_dir_x_reg;
-                                    elsif (prev_ball_y + BALL_RADIUS <= brick_top) or
-                                          (prev_ball_y - BALL_RADIUS >= brick_bottom) then
+                                    elsif (prev_ball_y + BALL_RADIUS >= brick_top) or
+                                          (prev_ball_y - BALL_RADIUS <= brick_bottom) then
                                         ball_dir_y_next <= not ball_dir_y_reg;
                                     else
                                         ball_dir_y_next <= not ball_dir_y_reg;

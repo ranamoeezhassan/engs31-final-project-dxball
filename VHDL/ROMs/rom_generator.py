@@ -36,7 +36,8 @@ def rom_12_bit_vhdl(name, im, mask=False, rem_x=-1, rem_y=-1):
     
     f.write(f"architecture Behavioral of {name.split('.')[0]}_rom is\n")
     f.write(f"  signal addr : std_logic_vector({addr_width - 1} downto 0);\n")
-    f.write(f"  signal row_reg, col_reg : std_logic_vector({row_width -1} downto 0);\n")
+    f.write(f"  signal row_reg : std_logic_vector({row_width -1} downto 0);\n")
+    f.write(f"  signal col_reg : std_logic_vector({col_width -1} downto 0);\n")
     f.write(f"begin\n\n")
     
     # Registering row and col addresses on clock
@@ -74,4 +75,4 @@ def generate(name):
     rom_12_bit_vhdl(name, im)
 
 # Generate the ROM VHDL for game_over.bmp, change filename as appropriate
-generate("game_over.bmp")
+generate("brick.bmp")
