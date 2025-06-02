@@ -1,5 +1,5 @@
 % Read image
-im = imread('.bmp');  % or any bmp file
+im = imread('game_over.bmp');  % or any bmp file
 
 % Get image size
 [height, width, ~] = size(im);

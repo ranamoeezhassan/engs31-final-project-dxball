@@ -74,4 +74,4 @@ def generate(name):
     rom_12_bit_vhdl(name, im)
 
 # Generate the ROM VHDL for game_over.bmp, change filename as appropriate
-generate("brick.bmp")
+generate("game_over.bmp")
