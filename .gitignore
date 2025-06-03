@@ -1,2 +1,3 @@
 *.db
 Vivado
+.DS_Store

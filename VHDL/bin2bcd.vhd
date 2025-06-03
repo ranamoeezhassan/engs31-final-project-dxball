@@ -17,7 +17,7 @@ architecture Behavioral of bin2bcd is
     signal bcd : unsigned(15 downto 0) := (others => '0');
     signal bcd0, bcd1, bcd2, bcd3 : std_logic_vector(3 downto 0);
 begin
-    process(bin_in, game_state)
+    process(bin_in, game_state, bcd0, bcd1, bcd2, bcd3 )
         variable bin : unsigned(15 downto 0);
         variable bcd_var : unsigned(15 downto 0) := (others => '0');
     begin
