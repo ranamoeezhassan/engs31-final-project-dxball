@@ -17,7 +17,8 @@ entity system_clock_generation is
         --External Clock:
         input_clk_port		: in std_logic;
         --System Clock:
-        system_clk_port		: out std_logic);
+        system_clk_port		: out std_logic;
+        fwd_clk_port		: out std_logic);
 end system_clock_generation;
 
 --=============================================================================
@@ -34,6 +35,7 @@ architecture behavioral_architecture of system_clock_generation is
     constant COUNT_LEN					: integer := integer(ceil( log2( real(CLOCK_DIVIDER_TC) ) ));
     signal system_clk_divider_counter	: unsigned(COUNT_LEN-1 downto 0) := (others => '0');
     signal system_clk_tog				: std_logic := '0';
+    signal system_clk                   : std_logic := '0';                      				
 
     --=============================================================================
     --Processes: 
@@ -62,4 +64,22 @@ begin
         port map (I => system_clk_tog,
                  O => system_clk_port );
 
+    --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    -- Clock Forwarding
+    --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++				
+    clock_forwarding_ODDR : ODDR
+    generic map(
+        DDR_CLK_EDGE => "SAME_EDGE", -- "OPPOSITE_EDGE" or "SAME_EDGE"
+        INIT => '0', -- Initial value for Q port ('1' or '0')
+        SRTYPE => "SYNC") -- Reset Type ("ASYNC" or "SYNC")
+    port map (
+        Q => fwd_clk_port, -- 1-bit DDR output
+        C => system_clk, -- 1-bit clock input
+        CE => '1', -- 1-bit clock enable input
+        D1 => '1', -- 1-bit data input (positive edge)
+        D2 => '0', -- 1-bit data input (negative edge)
+        R => '0', -- 1-bit reset input
+        S => '0' -- 1-bit set input
+    );	
+    
 end behavioral_architecture;

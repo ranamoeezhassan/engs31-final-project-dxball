@@ -87,3 +87,27 @@ set_property PACKAGE_PIN V4 [get_ports {an_ext_port[2]}]
 	set_property IOSTANDARD LVCMOS33 [get_ports {an_ext_port[2]}]
 set_property PACKAGE_PIN W4 [get_ports {an_ext_port[3]}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {an_ext_port[3]}]
+	
+##====================================================================
+## Pmod Header JA
+##====================================================================
+#Sch name = JA1
+set_property PACKAGE_PIN J1 [get_ports {spi_cs_ext_port}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {spi_cs_ext_port}]
+#Sch name = JA2
+set_property PACKAGE_PIN L2 [get_ports {spi_s_data_ext_port}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {spi_s_data_ext_port}]
+#Sch name = JA3
+#set_property PACKAGE_PIN J2 [get_ports {JA_port[2]}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {JA_port[2]}]
+#Sch name = JA4
+set_property PACKAGE_PIN G2 [get_ports {spi_sclk_ext_port}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {spi_sclk_ext_port}]
+	
+	##====================================================================
+## Pmod Header JB
+##====================================================================
+##Sch name = JB1
+set_property PACKAGE_PIN A14 [get_ports {spi_trigger_ext_port}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {spi_trigger_ext_port}]
+
