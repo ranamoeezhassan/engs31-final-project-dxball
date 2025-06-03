@@ -95,7 +95,8 @@ begin
         "1110000" when "10011", -- 7
         "1111111" when "10100", -- 8
         "1111011" when "10101", -- 9
-        "0000000" when others;  -- Blank
 
+
+        "0000000" when others;  -- adcount
     seg_port <= not(segh); -- Active-low
 end Behavioral;
