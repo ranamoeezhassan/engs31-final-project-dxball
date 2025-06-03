@@ -6,7 +6,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use ieee.math_real.all;
 
-
 --=============================================================================
 --Entity Declaration:
 --=============================================================================
@@ -22,7 +21,12 @@ entity full_game_toplevel is
         rgb : out std_logic_vector(11 downto 0);
         seg_ext_port		    : out std_logic_vector(0 to 6);
         dp_ext_port				: out std_logic;
-        an_ext_port				: out std_logic_vector(3 downto 0)
+        an_ext_port				: out std_logic_vector(3 downto 0);
+        spi_s_data_ext_port : in std_logic;
+        spi_cs_ext_port : out std_logic;
+        spi_sclk_ext_port : out std_logic;
+        spi_trigger_ext_port : out std_logic;
+        led : out std_logic
     );
 end entity;
 
@@ -43,9 +47,24 @@ component system_clock_generation is
         --External Clock:
         input_clk_port		: in std_logic;
         --System Clock:
-        system_clk_port		: out std_logic);
+        system_clk_port		: out std_logic;
+		fwd_clk_port		: out std_logic);
 end component;
 
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--Sample Tick Generation for SPI
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+component tick_generator is
+	generic (
+	   FREQUENCY_DIVIDER_RATIO : integer);
+	port (
+		system_clk_port : in  std_logic;
+		tick_port	    : out std_logic);
+end component;
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--Frame Divider for Ball
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 component frame_divider is
     generic (
         DIVIDE_BY : integer := 416667  -- Number of clock cycles between pulses
@@ -56,7 +75,6 @@ component frame_divider is
         take_sample : out STD_LOGIC  -- Pulse output, one clk wide
     );
 end component;
-
 --=============================================================================
 --Display Controller
 --=============================================================================
@@ -111,6 +129,22 @@ component button_interface is
 end component;
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--Spi Receiver
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+component spi_receiver is
+	generic(
+		N_SHIFTS			: integer);
+	port(
+		clk_port			: in  std_logic;	--1 MHz serial clock
+    	 
+		take_sample_port 	: in  std_logic;	--controller signals
+		spi_cs_port		    : out std_logic;
+
+		spi_s_data_port	    : in  std_logic;	--datapath signals
+		adc_data_port		: out std_logic_vector(11 downto 0));
+end component;
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --Ball Controller:
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 component ball is
@@ -144,16 +178,18 @@ end component;
 component paddle
     Generic (
         PADDLE_WIDTH  : integer := 80;
-        MAX_X         : integer := 640
+        MAX_X         : integer := 640;
+        ADC_BITS      : integer := 12;
+        PADDLE_SPEED  : integer := 5
     );
     Port (
         clk : in STD_LOGIC;
         reset : in STD_LOGIC;
-        btn_left_db : in STD_LOGIC;
-        btn_right_db : in STD_LOGIC;
+        adc_data     : in std_logic_vector(11 downto 0); 
         game_over : in STD_LOGIC;
         take_sample : in STD_LOGIC;
         paddle_x : out STD_LOGIC_VECTOR(9 downto 0)
+        
     );
 end component;
 
@@ -275,6 +311,8 @@ constant SCREEN_MAX_Y     : integer := 380;
 constant SCREEN_MIN_X     : integer := 0;
 constant SCREEN_MIN_Y     : integer := 0;
 
+constant ADC_BITS        : integer := 12;
+
 --=============================================================================
 --Signals
 --=============================================================================
@@ -302,6 +340,11 @@ signal dp_set : std_logic_vector(3 downto 0) := "0000";
 signal overflow         : std_logic := '0'; --You get this one for free
 signal game_state : std_logic_vector(1 downto 0);
 
+signal take_sample_adc : std_logic := '0';
+signal adc_data : std_logic_vector(11 downto 0) := (others => '0');
+signal spi_clk : std_logic := '0';
+signal clk_counter : unsigned(6 downto 0) := (others => '0'); -- Increased to 7 bits
+
 -- Internal signals
 signal bcd0, bcd1, bcd2, bcd3 : std_logic_vector(4 downto 0);
 
@@ -309,15 +352,33 @@ signal bcd0, bcd1, bcd2, bcd3 : std_logic_vector(4 downto 0);
 --Port Mappings
 --=============================================================================
 begin
-
 -- Clock
 clocking: system_clock_generation 
-generic map(
-	CLK_DIVIDER_RATIO => 4)          
+generic map( CLK_DIVIDER_RATIO => 4 )          
 port map(
-	input_clk_port 		=> ext_clk,
-	system_clk_port 	=> system_clk);
+    input_clk_port => ext_clk,
+    system_clk_port => system_clk,
+    fwd_clk_port => open );
 
+-- Clock for SPI
+-- Clock divider process (1 MHz from 100 MHz)
+spi_clocking: system_clock_generation 
+generic map( CLK_DIVIDER_RATIO => 49 )          
+port map(
+    input_clk_port => ext_clk,
+    system_clk_port => spi_clk,
+    fwd_clk_port => open );
+
+-- Tick generator for SPI controlled paddle movement
+tick_generation: tick_generator
+generic map( FREQUENCY_DIVIDER_RATIO => 25000 )
+port map( 
+    system_clk_port => spi_clk,
+    tick_port => take_sample_adc );
+spi_trigger_ext_port <= take_sample_adc;
+spi_sclk_ext_port <= spi_clk;
+
+-- Frame divider for Ball movement
 frame_dividing: frame_divider 
 generic map ( DIVIDE_BY => 416667)
 port map (
@@ -326,7 +387,6 @@ port map (
     take_sample => take_sample
 );
 
-	
 -- VGA Controller
 vga_synchronizer: vga_sync
 port map (
@@ -340,26 +400,15 @@ port map (
 	pixel_x => pixel_x,
 	pixel_y => pixel_y);
 
-
--- Left Button
-left_button_debouncer: button_interface
-    generic map ( STABLE_TIME => 100 )
-    port map (
-        clk_port => system_clk,
-        button_port => btn_left,
-        button_db_port => btn_left_db,
-        button_mp_port => open
-    );
-
--- Right Button
-right_button_debouncer: button_interface
-    generic map ( STABLE_TIME => 100 )
-    port map (
-        clk_port => system_clk,
-        button_port => btn_right,
-        button_db_port => btn_right_db,
-        button_mp_port => open
-    );
+-- SPI Receiver
+receiver: spi_receiver
+generic map ( N_SHIFTS => ADC_BITS )
+port map (
+    clk_port => spi_clk,
+    take_sample_port => take_sample_adc,
+    spi_cs_port => spi_cs_ext_port,
+    spi_s_data_port => spi_s_data_ext_port,
+    adc_data_port => adc_data );
 
 -- Center Button
 center_button_debouncer: button_interface
@@ -406,16 +455,16 @@ disp_ctrl: display_controller
 paddle_ctrl: paddle
     generic map (
         PADDLE_WIDTH => PADDLE_WIDTH_C,
-        MAX_X => SCREEN_MAX_X
+        MAX_X => SCREEN_MAX_X,
+        ADC_BITS => ADC_BITS
         )
     port map (
         clk => system_clk,
         reset => reset_db,
-        btn_left_db => btn_left_db,
-        btn_right_db => btn_right_db,
         paddle_x => paddle_x,
         game_over => game_over_sg,
-        take_sample => take_sample
+        take_sample => take_sample_adc,
+        adc_data => adc_data
 );
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -429,8 +478,6 @@ binary2bcd : bin2bcd port map(
         y2_display    	=> bcd2,
         y3_display    	=> bcd3
     );
-
----- prepend the overflow with 3 '0's
 
 seven_seg: mux7seg port map(
         clk_port	=> system_clk,		--should get the 1 MHz system clk
@@ -517,9 +564,6 @@ brick_ctrl : brick_controller
         hit_brick_index => hit_brick_index,
         hit_request => hit_request,
         brick_grid => brick_grid
-    );
-    
-
-  
+    );  
   
 end testbench;

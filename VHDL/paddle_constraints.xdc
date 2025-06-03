@@ -22,7 +22,11 @@ set_property -dict { PACKAGE_PIN T17 IOSTANDARD LVCMOS33 } [get_ports btn_right]
 # Left button (btnL)
 set_property -dict { PACKAGE_PIN W19 IOSTANDARD LVCMOS33 } [get_ports btn_left]
 # Center button (btnC)
-set_property -dict { PACKAGE_PIN U18 IOSTANDARD LVCMOS33 } [get_ports btn_center]
+#set_property -dict { PACKAGE_PIN U18 IOSTANDARD LVCMOS33 } [get_ports btn_center]
+
+set_property PACKAGE_PIN J3 [get_ports {btn_center}]
+set_property IOSTANDARD LVCMOS33 [get_ports {btn_center}]
+set_property PULLUP true [get_ports PS2Clk_ext_port]
 
 ##====================================================================
 ## VGA Connector
@@ -110,4 +114,3 @@ set_property PACKAGE_PIN G2 [get_ports {spi_sclk_ext_port}]
 ##Sch name = JB1
 set_property PACKAGE_PIN A14 [get_ports {spi_trigger_ext_port}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {spi_trigger_ext_port}]
-

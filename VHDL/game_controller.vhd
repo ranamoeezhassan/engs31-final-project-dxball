@@ -140,7 +140,7 @@ begin
         next_state <= current_state;
         case current_state is
             when Idle =>
-                if btn_center = '1' then
+                if btn_center = '0' then
                     next_state <= Playing;
                 end if;
             when Playing =>

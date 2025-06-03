@@ -554,11 +554,11 @@ ball_ctrl : ball
 -- Brick controller 
 brick_ctrl : brick_controller
     generic map (
-        BALL_RADIUS => BALL_RADIUS_C
+        BALL_RADIUS => BALL_RADIUS_C,
         BRICK_ROWS  => BRICK_ROWS_C,
         BRICK_COLS  => BRICK_COLS_C,
         BRICK_WIDTH => BRICK_WIDTH_C,
-        BRICK_HEIGHT => BRICK_HEIGHT_C,
+        BRICK_HEIGHT => BRICK_HEIGHT_C
     )
     port map (
         clk         => system_clk,
