@@ -12,8 +12,6 @@ use ieee.math_real.all;
 entity full_game_toplevel is
     port (
         ext_clk : in std_logic;
-        btn_left : in std_logic;     -- Left button (e.g., btnL)
-        btn_right : in std_logic;    -- Right button (e.g., btnR)
         reset : in std_logic;        -- Down button
         btn_center : in std_logic;  -- Center button to launch ball
         hsync : out std_logic;
@@ -25,8 +23,7 @@ entity full_game_toplevel is
         spi_s_data_ext_port : in std_logic;
         spi_cs_ext_port : out std_logic;
         spi_sclk_ext_port : out std_logic;
-        spi_trigger_ext_port : out std_logic;
-        led : out std_logic
+        spi_trigger_ext_port : out std_logic
     );
 end entity;
 
@@ -296,6 +293,7 @@ end component;
 constant PADDLE_WIDTH_C   : integer := 80;
 constant PADDLE_HEIGHT_C  : integer := 10;
 constant PADDLE_Y_C       : integer := 360;
+constant PADDLE_SPEED_C   : integer := 5;
 
 constant BALL_RADIUS_C    : integer := 12;
 constant BALL_SPEED_C       : integer := 3;
@@ -455,6 +453,7 @@ disp_ctrl: display_controller
 paddle_ctrl: paddle
     generic map (
         PADDLE_WIDTH => PADDLE_WIDTH_C,
+        PADDLE_SPEED => PADDLE_SPEED_C,
         MAX_X => SCREEN_MAX_X,
         ADC_BITS => ADC_BITS
         )

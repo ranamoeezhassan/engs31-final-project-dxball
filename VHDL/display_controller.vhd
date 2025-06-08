@@ -168,117 +168,119 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            -- Convert inputs to integers (always needed)
-            row_int <= to_integer(unsigned(row));
-            col_int <= to_integer(unsigned(column));
-            paddle_x_int <= to_integer(unsigned(paddle_x));
-            ball_x_int <= to_integer(unsigned(ball_x));
-            ball_y_int <= to_integer(unsigned(ball_y));
+            if active = '1' then
+                -- Convert inputs to integers (always needed)
+                row_int <= to_integer(unsigned(row));
+                col_int <= to_integer(unsigned(column));
+                paddle_x_int <= to_integer(unsigned(paddle_x));
+                ball_x_int <= to_integer(unsigned(ball_x));
+                ball_y_int <= to_integer(unsigned(ball_y));
+        
+                -- Default to background
+                color <= BLACK;
+        
+                -- GAME OVER LOGIC
+                if state = "10" then
+                    if row_int >= GAME_OVER_IMAGE_TOP and row_int < GAME_OVER_IMAGE_TOP + GAME_OVER_IMAGE_HEIGHT and
+                       col_int >= GAME_OVER_IMAGE_LEFT and col_int < GAME_OVER_IMAGE_LEFT + GAME_OVER_IMAGE_WIDTH then
+        
+                        game_over_row <= std_logic_vector(to_unsigned(row_int - GAME_OVER_IMAGE_TOP, 7));
+                        game_over_col <= std_logic_vector(to_unsigned(col_int - GAME_OVER_IMAGE_LEFT, 7));
+                        display_game_over_pixel <= '1';
+                    else
+                        display_game_over_pixel <= '0';
+                    end if;
+        
+                    -- One-cycle delay to let ROM output valid color
+                    display_game_over_pixel_d <= display_game_over_pixel;
+        
+                    if display_game_over_pixel_d = '1' then
+                        color <= game_over_color;
+                    end if;
+        
+                elsif state = "11" then
+                    if row_int >= GAME_WIN_IMAGE_TOP and row_int < GAME_WIN_IMAGE_TOP + GAME_WIN_IMAGE_HEIGHT and
+                       col_int >= GAME_WIN_IMAGE_LEFT and col_int < GAME_WIN_IMAGE_LEFT + GAME_WIN_IMAGE_WIDTH then
+                
+                        game_win_row <= std_logic_vector(to_unsigned(row_int - GAME_WIN_IMAGE_TOP, 8));
+                        game_win_col <= std_logic_vector(to_unsigned(col_int - GAME_WIN_IMAGE_LEFT, 7));
+                        game_win_pixel <= '1';
+                    else
+                        game_win_pixel <= '0';
+                    end if;
+                
+                    -- One-cycle delay for ROM output
+                    game_win_pixel_d <= game_win_pixel;
+                
+                    if game_win_pixel_d = '1' then
+                        color <= game_win_color;
+                    end if;
     
-            -- Default to background
-            color <= BLACK;
-    
-            -- GAME OVER LOGIC
-            if state = "10" then
-                if row_int >= GAME_OVER_IMAGE_TOP and row_int < GAME_OVER_IMAGE_TOP + GAME_OVER_IMAGE_HEIGHT and
-                   col_int >= GAME_OVER_IMAGE_LEFT and col_int < GAME_OVER_IMAGE_LEFT + GAME_OVER_IMAGE_WIDTH then
-    
-                    game_over_row <= std_logic_vector(to_unsigned(row_int - GAME_OVER_IMAGE_TOP, 7));
-                    game_over_col <= std_logic_vector(to_unsigned(col_int - GAME_OVER_IMAGE_LEFT, 7));
-                    display_game_over_pixel <= '1';
                 else
-                    display_game_over_pixel <= '0';
-                end if;
-    
-                -- One-cycle delay to let ROM output valid color
-                display_game_over_pixel_d <= display_game_over_pixel;
-    
-                if display_game_over_pixel_d = '1' then
-                    color <= game_over_color;
-                end if;
-    
-            elsif state = "11" then
-                if row_int >= GAME_WIN_IMAGE_TOP and row_int < GAME_WIN_IMAGE_TOP + GAME_WIN_IMAGE_HEIGHT and
-                   col_int >= GAME_WIN_IMAGE_LEFT and col_int < GAME_WIN_IMAGE_LEFT + GAME_WIN_IMAGE_WIDTH then
-            
-                    game_win_row <= std_logic_vector(to_unsigned(row_int - GAME_WIN_IMAGE_TOP, 8));
-                    game_win_col <= std_logic_vector(to_unsigned(col_int - GAME_WIN_IMAGE_LEFT, 7));
-                    game_win_pixel <= '1';
-                else
-                    game_win_pixel <= '0';
-                end if;
-            
-                -- One-cycle delay for ROM output
-                game_win_pixel_d <= game_win_pixel;
-            
-                if game_win_pixel_d = '1' then
-                    color <= game_win_color;
-                end if;
-
-            else
-                -- Draw paddle
-                if row_int >= PADDLE_Y and row_int < PADDLE_Y + PADDLE_HEIGHT and
-                   col_int >= paddle_x_int and col_int < paddle_x_int + PADDLE_WIDTH then
-                
-                    paddle_pixel_row <= std_logic_vector(to_unsigned(row_int - PADDLE_Y, 4));
-                    paddle_pixel_col <= std_logic_vector(to_unsigned(col_int - paddle_x_int, 7));
-                    paddle_on <= '1';
-                else
-                    paddle_on <= '0';
-                end if;
-                
-                paddle_on_d <= paddle_on;
-                
-                if paddle_on_d = '1' then
-                    color <= paddle_color;
-                end if;
-
-    
-                -- Draw ball (circular)
-                dist_sq <= (row_int - ball_y_int) * (row_int - ball_y_int) + 
-                           (col_int - ball_x_int) * (col_int - ball_x_int);
-
-                
-                if dist_sq <= BALL_RADIUS_SQ then
-                    ball_pixel_row <= std_logic_vector(to_unsigned(row_int - (ball_y_int - BALL_RADIUS), 5));
-                    ball_pixel_col <= std_logic_vector(to_unsigned(col_int - (ball_x_int - BALL_RADIUS), 5));
-                    ball_on <= '1';
-                else
-                    ball_on <= '0';
-                end if;
-                
-                ball_on_d <= ball_on;
+                    -- Draw paddle
+                    if row_int >= PADDLE_Y and row_int < PADDLE_Y + PADDLE_HEIGHT and
+                       col_int >= paddle_x_int and col_int < paddle_x_int + PADDLE_WIDTH then
                     
-                if ball_on_d = '1' then
-                    color <= ball_color;
-                end if;
+                        paddle_pixel_row <= std_logic_vector(to_unsigned(row_int - PADDLE_Y, 4));
+                        paddle_pixel_col <= std_logic_vector(to_unsigned(col_int - paddle_x_int, 7));
+                        paddle_on <= '1';
+                    else
+                        paddle_on <= '0';
+                    end if;
+                    
+                    paddle_on_d <= paddle_on;
+                    
+                    if paddle_on_d = '1' then
+                        color <= paddle_color;
+                    end if;
     
-                
-                -- Draw bricks (pixel-based within each brick)
-                brick_row <= row_int / BRICK_HEIGHT;
-                brick_col <= col_int / BRICK_WIDTH;
-                
-                if brick_row < BRICK_ROWS and brick_col < BRICK_COLS then
-                    if brick_grid(brick_row * BRICK_COLS + brick_col) = '1' then
-                        -- Use pixel offset within the brick to access brick ROM
-                        brick_pixel_row <= std_logic_vector(to_unsigned(row_int mod BRICK_HEIGHT, 5));
-                        brick_pixel_col <= std_logic_vector(to_unsigned(col_int mod BRICK_WIDTH, 6));
-                        display_brick_pixel <= '1';
+        
+                    -- Draw ball (circular)
+                    dist_sq <= (row_int - ball_y_int) * (row_int - ball_y_int) + 
+                               (col_int - ball_x_int) * (col_int - ball_x_int);
+    
+                    
+                    if dist_sq <= BALL_RADIUS_SQ then
+                        ball_pixel_row <= std_logic_vector(to_unsigned(row_int - (ball_y_int - BALL_RADIUS), 5));
+                        ball_pixel_col <= std_logic_vector(to_unsigned(col_int - (ball_x_int - BALL_RADIUS), 5));
+                        ball_on <= '1';
+                    else
+                        ball_on <= '0';
+                    end if;
+                    
+                    ball_on_d <= ball_on;
+                        
+                    if ball_on_d = '1' then
+                        color <= ball_color;
+                    end if;
+        
+                    
+                    -- Draw bricks (pixel-based within each brick)
+                    brick_row <= row_int / BRICK_HEIGHT;
+                    brick_col <= col_int / BRICK_WIDTH;
+                    
+                    if brick_row < BRICK_ROWS and brick_col < BRICK_COLS then
+                        if brick_grid(brick_row * BRICK_COLS + brick_col) = '1' then
+                            -- Use pixel offset within the brick to access brick ROM
+                            brick_pixel_row <= std_logic_vector(to_unsigned(row_int mod BRICK_HEIGHT, 5));
+                            brick_pixel_col <= std_logic_vector(to_unsigned(col_int mod BRICK_WIDTH, 6));
+                            display_brick_pixel <= '1';
+                        else
+                            display_brick_pixel <= '0';
+                        end if;
                     else
                         display_brick_pixel <= '0';
                     end if;
-                else
-                    display_brick_pixel <= '0';
+                    
+                    -- Pipeline delay
+                    display_brick_pixel_d <= display_brick_pixel;
+                    
+                    -- Apply brick color from ROM
+                    if display_brick_pixel_d = '1' then
+                        color <= brick_color;
+                    end if;
+    
                 end if;
-                
-                -- Pipeline delay
-                display_brick_pixel_d <= display_brick_pixel;
-                
-                -- Apply brick color from ROM
-                if display_brick_pixel_d = '1' then
-                    color <= brick_color;
-                end if;
-
             end if;
         end if;
     end process;

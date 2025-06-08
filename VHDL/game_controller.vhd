@@ -57,7 +57,7 @@ architecture Behavioral of game_controller is
     signal brick_row, brick_col, brick_index : integer := 0;
     signal brick_left, brick_right, brick_top, brick_bottom : integer := 0;
 
-    signal prev_ball_x, prev_ball_y : integer := 0;
+    signal prev_ball_x_reg, prev_ball_y_reg  : integer := 0;
     signal brick_hit : std_logic := '0';
     signal recent_brick_hit : std_logic := '0';
 begin
@@ -85,8 +85,8 @@ begin
     begin
         if rising_edge(clk) then
             -- Store previous position BEFORE updating
-            prev_ball_x <= ball_x_int;
-            prev_ball_y <= ball_y_int;
+            prev_ball_x_reg <= ball_x_int;
+            prev_ball_y_reg <= ball_y_int;
 
             ball_x_int   <= to_integer(ball_pos_x);
             ball_y_int   <= to_integer(ball_pos_y);
@@ -160,7 +160,7 @@ begin
 
     process(current_state, ball_x_int, ball_y_int, paddle_left, paddle_right,
             ball_dir_x_reg, ball_dir_y_reg, brick_grid, brick_row, brick_col, brick_index,
-            brick_left, brick_right, brick_top, brick_bottom, prev_ball_x, prev_ball_y,
+            brick_left, brick_right, brick_top, brick_bottom, prev_ball_x_reg, prev_ball_y_reg,
             recent_brick_hit)
     begin
         ball_dir_x_next  <= ball_dir_x_reg;
@@ -209,12 +209,12 @@ begin
                                 brick_hit <= '1';
                                 
                                 if recent_brick_hit = '0' then
-                                    if (prev_ball_x + BALL_RADIUS <= brick_left) or
-                                       (prev_ball_x - BALL_RADIUS >= brick_right) then
+                                    if (prev_ball_x_reg + BALL_RADIUS <= brick_left) or
+                                       (prev_ball_x_reg - BALL_RADIUS >= brick_right) then
                                         ball_dir_x_next <= not ball_dir_x_reg;
-                                    elsif (prev_ball_y + BALL_RADIUS >= brick_top) or
-                                          (prev_ball_y - BALL_RADIUS <= brick_bottom) then
-                                        ball_dir_y_next <= not ball_dir_y_reg;
+                                    elsif (prev_ball_y_reg + BALL_RADIUS >= brick_top) or
+                                          (prev_ball_y_reg - BALL_RADIUS <= brick_bottom) then
+                                            ball_dir_y_next <= not ball_dir_y_reg;
                                     else
                                         ball_dir_y_next <= not ball_dir_y_reg;
                                     end if;

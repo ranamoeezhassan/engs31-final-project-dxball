@@ -1,3 +1,7 @@
+# Author: Rana Moeez Hassan
+# This script reads a 24-bit BMP image and converts its pixel data into a VHDL ROM file
+# that maps (row, col) addresses to 12-bit RGB values (4 bits per channel).
+
 import imageio.v2 as imageio
 import math
 
